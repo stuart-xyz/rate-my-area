@@ -14,8 +14,9 @@ libraryDependencies ++= Seq(
   "com.softwaremill.macwire" %% "macrosakka" % "2.3.0" % "provided",
   "com.softwaremill.macwire" %% "util" % "2.3.0",
   "com.softwaremill.macwire" %% "proxy" % "2.3.0",
-  "com.typesafe.play" %% "play-slick" % "3.0.0",
-  "com.typesafe.play" %% "play-slick-evolutions" % "3.0.0",
+  "com.typesafe.play" %% "play-slick" % "3.0.1",
+  "com.typesafe.play" %% "play-slick-evolutions" % "3.0.1",
+  "org.postgresql" % "postgresql" % "9.4.1207.jre7",
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.0" % Test
 )
 
