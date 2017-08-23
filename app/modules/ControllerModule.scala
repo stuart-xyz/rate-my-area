@@ -1,7 +1,9 @@
+package modules
+
 import controllers.HomeController
 import play.api.mvc.ControllerComponents
 
-trait AppModule {
+trait ControllerModule {
 
   import com.softwaremill.macwire._
 

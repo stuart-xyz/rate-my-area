@@ -3,7 +3,7 @@ import play.api.inject.DefaultApplicationLifecycle
 import play.api.{Application, ApplicationLoader, Configuration, Environment}
 import play.core.DefaultWebCommands
 
-trait MacWireApplicationFactory extends FakeApplicationFactory {
+trait AppApplicationFactory extends FakeApplicationFactory {
 
   private class MacWireApplicationBuilder {
     def build(): Application = {
@@ -15,7 +15,7 @@ trait MacWireApplicationFactory extends FakeApplicationFactory {
         initialConfiguration = Configuration.load(env),
         lifecycle = new DefaultApplicationLifecycle()
       )
-      val loader = new MacWireApplicationLoader()
+      val loader = new AppApplicationLoader()
       loader.load(context)
     }
   }

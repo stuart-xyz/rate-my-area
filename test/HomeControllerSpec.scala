@@ -8,7 +8,7 @@ import play.api.test._
  *
  * For more information, see https://www.playframework.com/documentation/latest/ScalaTestingWithScalaTest
  */
-class HomeControllerSpec extends PlaySpec with BaseOneAppPerTest with MacWireApplicationFactory {
+class HomeControllerSpec extends PlaySpec with BaseOneAppPerTest with AppApplicationFactory {
 
   "HomeController GET" should {
 
