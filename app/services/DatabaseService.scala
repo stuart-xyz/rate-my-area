@@ -10,9 +10,17 @@ class DatabaseService(dbConfig: DatabaseConfig[JdbcProfile])(implicit ec: Execut
 
   import dbConfig.profile.api._
 
-  def getAllUsers: Future[Seq[User]] = {
-    val query = TableQuery[UserTable]
-    dbConfig.db.run(query.result)
+  private val users = TableQuery[UserTable]
+
+  def listUsers: Future[Seq[User]] = {
+    dbConfig.db.run(users.result)
+  }
+
+  def addUser(username: String, password: String): Future[User] = {
+    dbConfig.db.run {
+      (users returning users.map(_.id) into ((user, id) => user.copy(id = id))) +=
+        User(0, username, password, "name", isAdmin = true)
+    }
   }
 
 }

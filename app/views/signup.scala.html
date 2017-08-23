@@ -1,0 +1,18 @@
+@()
+
+@main("Signup | RateMyArea") {
+    <form method="post" action="/signup">
+        <fieldset>
+            <legend>Signup</legend>
+            <p>
+                <label for="username">Username:</label>
+                <input id="username" name="username"/>
+            </p>
+            <p>
+                <label for="password">Password:</label>
+                <input id="password" name="password"/>
+            </p>
+            <button class="button--sm">Signup</button>
+        </fieldset>
+    </form>
+}

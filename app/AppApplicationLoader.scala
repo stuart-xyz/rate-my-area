@@ -3,8 +3,6 @@ import com.softwaremill.macwire._
 import modules.{ControllerModule, DatabaseModule}
 import play.api.ApplicationLoader.Context
 import play.api._
-import play.api.db.evolutions.EvolutionsComponents
-import play.api.db.slick.evolutions.SlickEvolutionsComponents
 import play.api.routing.Router
 import play.filters.HttpFiltersComponents
 import router.Routes
