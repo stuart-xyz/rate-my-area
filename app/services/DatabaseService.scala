@@ -1,16 +1,18 @@
 package services
 
+import models.{User, UserTable}
 import slick.basic.DatabaseConfig
 import slick.jdbc.JdbcProfile
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class DatabaseService(dbConfig: DatabaseConfig[JdbcProfile])(implicit ec: ExecutionContext) {
 
   import dbConfig.profile.api._
 
-  def getUser: String = {
-    "test"
+  def getAllUsers: Future[Seq[User]] = {
+    val query = TableQuery[UserTable]
+    dbConfig.db.run(query.result)
   }
 
 }

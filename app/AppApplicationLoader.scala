@@ -3,8 +3,8 @@ import com.softwaremill.macwire._
 import modules.{ControllerModule, DatabaseModule}
 import play.api.ApplicationLoader.Context
 import play.api._
-import play.api.db.{DBComponents, HikariCPComponents}
 import play.api.db.evolutions.EvolutionsComponents
+import play.api.db.{DBComponents, HikariCPComponents}
 import play.api.routing.Router
 import play.filters.HttpFiltersComponents
 import router.Routes
@@ -25,8 +25,8 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   with DBComponents
   with EvolutionsComponents
   with HikariCPComponents
-  with ControllerModule
-  with DatabaseModule {
+  with DatabaseModule
+  with ControllerModule {
 
   LoggerConfigurator(context.environment.classLoader).foreach { configurator =>
     configurator.configure(context.environment)
