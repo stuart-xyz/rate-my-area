@@ -17,7 +17,7 @@ object User {
 
 class UserTable(tag: Tag) extends Table[User](tag, "users") {
 
-  def id = column[Int]("id", O.PrimaryKey)
+  def id = column[Int]("id", O.AutoInc, O.PrimaryKey)
   def email = column[String]("email")
   def password = column[String]("password")
   def fullName = column[String]("fullname")
