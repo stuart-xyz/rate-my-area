@@ -1,6 +1,6 @@
 package modules
 
-import controllers.HomeController
+import controllers.{AuthController, HomeController}
 import play.api.mvc.ControllerComponents
 import services.DatabaseService
 
@@ -16,5 +16,6 @@ trait ControllerModule {
   def controllerComponents: ControllerComponents
 
   lazy val homeController: HomeController = wire[HomeController]
+  lazy val authController: AuthController = wire[AuthController]
 
 }
