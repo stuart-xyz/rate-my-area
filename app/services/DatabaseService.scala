@@ -16,10 +16,15 @@ class DatabaseService(dbConfig: DatabaseConfig[JdbcProfile])(implicit ec: Execut
     dbConfig.db.run(users.result)
   }
 
-  def addUser(username: String, password: String): Future[User] = {
+  def addUser(email: String, hashedPassword: String, salt: String): Future[Int] = {
     dbConfig.db.run {
-      (users returning users.map(_.id) into ((user, id) => user.copy(id = id))) +=
-        User(0, username, password, "name", isAdmin = true)
+      (users returning users.map(_.id)) += User(0, email, hashedPassword, salt, "name", isAdmin = true)
+    }
+  }
+
+  def getUserOption(email: String): Future[Option[User]] = {
+    dbConfig.db.run {
+      users.filter(_.email.toString == email).result.headOption
     }
   }
 

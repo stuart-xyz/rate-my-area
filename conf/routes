@@ -9,6 +9,7 @@ GET     /login      controllers.AuthController.loginPage
 
 + nocsrf
 POST    /signup     controllers.AuthController.signup
++ nocsrf
 POST    /login      controllers.AuthController.login
 
 # Map static resources from the /public folder to the /assets URL path

@@ -3,9 +3,11 @@ import com.softwaremill.macwire._
 import modules.{ControllerModule, DatabaseModule}
 import play.api.ApplicationLoader.Context
 import play.api._
+import play.api.cache.ehcache.EhCacheComponents
 import play.api.routing.Router
 import play.filters.HttpFiltersComponents
 import router.Routes
+import services.AuthService
 
 import scala.concurrent.ExecutionContext
 
@@ -20,6 +22,7 @@ class AppApplicationLoader extends ApplicationLoader {
 class AppComponents(context: Context) extends BuiltInComponentsFromContext(context)
   with HttpFiltersComponents
   with AssetsComponents
+  with EhCacheComponents
   with DatabaseModule
   with ControllerModule {
 
@@ -36,5 +39,7 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
     implicit val prefix: String = "/"
     wire[Routes]
   }
+
+  lazy val authService = new AuthService(defaultCacheApi, databaseService)
 
 }

@@ -2,7 +2,7 @@ package modules
 
 import controllers.{AuthController, HomeController}
 import play.api.mvc.ControllerComponents
-import services.DatabaseService
+import services.{AuthService, DatabaseService}
 
 import scala.concurrent.ExecutionContext
 
@@ -13,6 +13,7 @@ trait ControllerModule {
   // dependencies
   implicit def ec: ExecutionContext
   def databaseService: DatabaseService
+  def authService: AuthService
   def controllerComponents: ControllerComponents
 
   lazy val homeController: HomeController = wire[HomeController]
