@@ -20,11 +20,9 @@ class AuthController(cc: ControllerComponents, databaseService: DatabaseService,
       userLoginData => {
         for {
           cookieOption <- authService.login(userLoginData.email, userLoginData.password)
-        } yield {
-          cookieOption match {
-            case Some(cookie) => Redirect("/").withCookies(cookie)
-            case None => Ok(views.html.login())
-          }
+        } yield cookieOption match {
+          case Some(cookie) => Redirect("/").withCookies(cookie)
+          case None => Ok(views.html.login())
         }
       }
     )
@@ -39,7 +37,7 @@ class AuthController(cc: ControllerComponents, databaseService: DatabaseService,
       formWithErrors => BadRequest,
       userSignupData => {
         authService.signup(userSignupData.email, userSignupData.password)
-        Ok(views.html.login())
+        Redirect("/login")
       }
     )
   }

@@ -21,6 +21,7 @@ class AuthService(cacheApi: AsyncCacheApi, databaseService: DatabaseService)(imp
   def login(email: String, password: String): Future[Option[Cookie]] = {
     for {
       userOption <- databaseService.getUserOption(email)
+    } yield for {
       user <- userOption
       if BCrypt.checkpw(password + user.salt, user.hashedPassword)
     } yield generateCookie(user)
@@ -33,8 +34,8 @@ class AuthService(cacheApi: AsyncCacheApi, databaseService: DatabaseService)(imp
 
   def hashPasswordWithSalt(password: String): HashedPasswordWithSalt = {
     val salt = BCrypt.gensalt()
-    val hash = BCrypt.hashpw(password, salt)
-    HashedPasswordWithSalt(hash, salt)
+    val hashedPassword = BCrypt.hashpw(password, salt)
+    HashedPasswordWithSalt(hashedPassword, salt)
   }
 
   private def generateCookie(user: User): Cookie = {
