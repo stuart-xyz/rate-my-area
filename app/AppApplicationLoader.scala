@@ -4,6 +4,8 @@ import modules.{ControllerModule, DatabaseModule}
 import play.api.ApplicationLoader.Context
 import play.api._
 import play.api.cache.ehcache.EhCacheComponents
+import play.api.http.HttpErrorHandler
+import play.api.mvc.{AnyContent, BodyParser}
 import play.api.routing.Router
 import play.filters.HttpFiltersComponents
 import router.Routes
@@ -35,11 +37,14 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
 
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
+  lazy val thisHttpErrorHandler: HttpErrorHandler = httpErrorHandler
+  lazy val bodyParser: BodyParser[AnyContent] = playBodyParsers.default
+
   lazy val router: Router = {
     implicit val prefix: String = "/"
     wire[Routes]
   }
 
-  lazy val authService = new AuthService(defaultCacheApi, databaseService)
+  lazy val authService = new AuthService(defaultCacheApi.sync, databaseService)
 
 }

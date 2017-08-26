@@ -6,13 +6,13 @@ import java.util.{Base64, UUID}
 
 import models.User
 import org.mindrot.jbcrypt.BCrypt
-import play.api.cache.AsyncCacheApi
-import play.api.mvc.Cookie
+import play.api.cache.SyncCacheApi
+import play.api.mvc.{Cookie, RequestHeader}
 
-import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration.Duration
+import scala.concurrent.{ExecutionContext, Future}
 
-class AuthService(cacheApi: AsyncCacheApi, databaseService: DatabaseService)(implicit ec: ExecutionContext) {
+class AuthService(cacheApi: SyncCacheApi, databaseService: DatabaseService)(implicit ec: ExecutionContext) {
 
   case class HashedPasswordWithSalt(hashedPassword: String, salt: String)
   private val mda = MessageDigest.getInstance("SHA-512")
@@ -36,6 +36,10 @@ class AuthService(cacheApi: AsyncCacheApi, databaseService: DatabaseService)(imp
     val salt = BCrypt.gensalt()
     val hashedPassword = BCrypt.hashpw(password, salt)
     HashedPasswordWithSalt(hashedPassword, salt)
+  }
+
+  def checkCookie(header: RequestHeader): Option[User] = {
+    header.cookies.get(cookieHeader).flatMap(cookie => cacheApi.get[User](cookie.value))
   }
 
   private def generateCookie(user: User): Cookie = {

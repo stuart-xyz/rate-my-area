@@ -1,17 +1,15 @@
 package controllers
 
 import play.api.mvc._
-import services.DatabaseService
+import services.{AuthService, DatabaseService, UserAuthAction, UserAuthRequest}
 
 import scala.concurrent.ExecutionContext
 
-class HomeController(cc: ControllerComponents, databaseService: DatabaseService)(implicit ec: ExecutionContext)
+class HomeController(cc: ControllerComponents, databaseService: DatabaseService, authService: AuthService, userAuthAction: UserAuthAction)(implicit ec: ExecutionContext)
   extends AbstractController(cc) {
 
-  def index(): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
-    for {
-      users <- databaseService.listUsers
-    } yield Ok(views.html.index())
+  def index(): Action[AnyContent] = userAuthAction { implicit request: UserAuthRequest[AnyContent] =>
+    Ok(views.html.index(request.user.fullName))
   }
 
 }

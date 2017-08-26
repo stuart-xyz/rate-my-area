@@ -1,8 +1,8 @@
 package modules
 
 import controllers.{AuthController, HomeController}
-import play.api.mvc.ControllerComponents
-import services.{AuthService, DatabaseService}
+import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
+import services.{AuthService, DatabaseService, UserAuthAction}
 
 import scala.concurrent.ExecutionContext
 
@@ -15,8 +15,10 @@ trait ControllerModule {
   def databaseService: DatabaseService
   def authService: AuthService
   def controllerComponents: ControllerComponents
+  def bodyParser: BodyParser[AnyContent]
 
   lazy val homeController: HomeController = wire[HomeController]
   lazy val authController: AuthController = wire[AuthController]
+  lazy val userAuthAction: UserAuthAction = wire[UserAuthAction]
 
 }
