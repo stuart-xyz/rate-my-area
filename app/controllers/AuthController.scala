@@ -22,7 +22,7 @@ class AuthController(cc: ControllerComponents, databaseService: DatabaseService,
           cookieOption <- authService.login(userLoginData.email, userLoginData.password)
         } yield cookieOption match {
           case Some(cookie) => Redirect("/").withCookies(cookie)
-          case None => Ok(views.html.login())
+          case None => Ok(views.html.login(invalidCredentials = true))
         }
       }
     )

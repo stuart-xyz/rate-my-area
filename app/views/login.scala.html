@@ -1,4 +1,4 @@
-@()
+@(invalidCredentials: Boolean = false)
 
 @main("Login | RateMyArea") {
     <form method="post" action="/login">
@@ -12,6 +12,7 @@
                 <label for="password">Password:</label>
                 <input id="password" name="password"/>
             </p>
+            @(if (invalidCredentials) <p style="color: red;">Invalid email address or password</p>)
             <button class="button--sm">Login</button>
         </fieldset>
     </form>
