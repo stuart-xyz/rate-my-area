@@ -23,7 +23,7 @@ class AuthService(cacheApi: AsyncCacheApi, databaseService: DatabaseService)(imp
       userOption <- databaseService.getUserOption(email)
     } yield for {
       user <- userOption
-      if BCrypt.checkpw(password + user.salt, user.hashedPassword)
+      if BCrypt.checkpw(password, user.hashedPassword)
     } yield generateCookie(user)
   }
 

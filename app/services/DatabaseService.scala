@@ -23,7 +23,7 @@ class DatabaseService(dbConfig: DatabaseConfig[JdbcProfile])(implicit ec: Execut
   }
 
   def getUserOption(email: String): Future[Option[User]] = {
-    dbConfig.db.run(users.filter(_.email === email).result.headOption)
+    dbConfig.db.run(users.filter(_.email.toLowerCase === email.toLowerCase).result.headOption)
   }
 
 }
