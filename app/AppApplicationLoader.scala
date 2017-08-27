@@ -36,7 +36,6 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   applicationEvolutions
 
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
-
   lazy val thisHttpErrorHandler: HttpErrorHandler = httpErrorHandler
   lazy val bodyParser: BodyParser[AnyContent] = playBodyParsers.default
   lazy val defaultSyncCacheApi: SyncCacheApi = defaultCacheApi.sync

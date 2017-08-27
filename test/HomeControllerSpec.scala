@@ -12,13 +12,13 @@ class HomeControllerSpec extends PlaySpec with BaseOneAppPerTest with AppApplica
 
   "HomeController GET" should {
 
-    "render the index page from the router" in {
+    "redirect unauthorised users to the login page" in {
       val request = FakeRequest(GET, "/")
-      val home = route(app, request).get
+      val result = route(app, request).get
 
-      status(home) mustBe OK
-      contentType(home) mustBe Some("text/html")
-      contentAsString(home) must include ("Welcome to Play")
+      status(result) mustBe SEE_OTHER
+//      contentType(result) mustBe Some("text/html")
+//      contentAsString(result) must include ("Welcome to Play")
     }
 
   }

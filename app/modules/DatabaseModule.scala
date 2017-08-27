@@ -1,8 +1,8 @@
 package modules
 
 import play.api.db.evolutions.EvolutionsComponents
-import play.api.db.slick.{DbName, SlickComponents}
 import play.api.db.slick.evolutions.SlickEvolutionsComponents
+import play.api.db.slick.{DbName, SlickComponents}
 import services.DatabaseService
 import slick.jdbc.JdbcProfile
 
