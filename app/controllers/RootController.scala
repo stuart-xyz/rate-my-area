@@ -5,7 +5,7 @@ import services.{AuthService, DatabaseService, UserAuthAction, UserAuthRequest}
 
 import scala.concurrent.ExecutionContext
 
-class HomeController(cc: ControllerComponents, databaseService: DatabaseService, authService: AuthService, userAuthAction: UserAuthAction)(implicit ec: ExecutionContext)
+class RootController(cc: ControllerComponents, databaseService: DatabaseService, authService: AuthService, userAuthAction: UserAuthAction)(implicit ec: ExecutionContext)
   extends AbstractController(cc) {
 
   def index(): Action[AnyContent] = userAuthAction { implicit request: UserAuthRequest[AnyContent] =>

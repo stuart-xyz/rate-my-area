@@ -1,6 +1,6 @@
 package modules
 
-import controllers.{AuthController, HomeController}
+import controllers.{AuthController, RootController}
 import play.api.cache.SyncCacheApi
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
 import services.{AuthService, DatabaseService, UserAuthAction}
@@ -20,7 +20,7 @@ trait ControllerModule {
 
   lazy val authService = new AuthService(defaultSyncCacheApi, databaseService)
 
-  lazy val homeController: HomeController = wire[HomeController]
+  lazy val rootController: RootController = wire[RootController]
   lazy val authController: AuthController = wire[AuthController]
   lazy val userAuthAction: UserAuthAction = wire[UserAuthAction]
 
