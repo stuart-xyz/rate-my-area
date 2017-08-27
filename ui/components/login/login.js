@@ -14,40 +14,49 @@ class Login extends React.Component {
   }
 
   handleLoginError(error) {
-    console.log("login error");
+    console.log(error);
   }
 
-  handleClick(e) {
+  handleClick() {
     fetch('/login', {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify(this.state),
       headers: {
         'Content-Type': 'application/json'
       }
-    }).catch(this.handleLoginError);
+    })
+    .then(this.props.onAuthentication)
+    .catch(this.handleLoginError);
   }
-  
+
   render() {
+    const self = this;
     return (
-      <div className = "loginForm">
+      <div className="loginForm">
         <input
-          placeholder = "Email address"
-          className = "emailInput"
-          onChange = {event => this.setState({email: event.target.value})}
-          />
+          placeholder="Email address"
+          onChange={function (event) {
+            self.setState({email: event.target.value});
+          }}
+        />
         <input
-          placeholder = "Password"
-          className = "passwordInput"
-          onChange = {event => this.setState({password: event.target.value})}
-          />
+          placeholder="Password"
+          onChange={function (event) {
+            self.setState({password: event.target.value});
+          }}
+        />
         <button
-          type = "input"
-          onClick = {this.handleClick}>
+          onClick={this.handleClick}
+        >
           Login
         </button>
       </div>
     );
   }
 }
+
+Login.propTypes = {
+  onAuthentication: PropTypes.func.isRequired
+};
 
 export default Login;

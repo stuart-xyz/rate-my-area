@@ -4,6 +4,7 @@
 # ~~~~
 
 GET     /           controllers.IndexController.index
+GET     /user       controllers.AuthController.getUser
 
 + nocsrf
 POST    /login      controllers.AuthController.login

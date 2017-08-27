@@ -2,11 +2,11 @@ package controllers
 
 import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
-import services.{AuthService, DatabaseService}
+import services.{AuthService, DatabaseService, UserAuthAction}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthController(cc: ControllerComponents, databaseService: DatabaseService, authService: AuthService)(implicit ec: ExecutionContext)
+class AuthController(cc: ControllerComponents, databaseService: DatabaseService, authService: AuthService, userAuthAction: UserAuthAction)(implicit ec: ExecutionContext)
   extends AbstractController(cc) {
 
   def login: Action[AnyContent] = Action.async { implicit request =>
@@ -36,6 +36,10 @@ class AuthController(cc: ControllerComponents, databaseService: DatabaseService,
       )
       case None => BadRequest("Expected JSON body")
     }
+  }
+
+  def getUser = userAuthAction { implicit request =>
+    Ok(Json.stringify(Json.toJson(request.user)))
   }
 
 }

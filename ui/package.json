@@ -4,24 +4,36 @@
   "description": "RateMyArea UI",
   "main": "./app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "xo",
+    "test": "npm run lint",
     "watch": "webpack --watch"
   },
   "author": "Stuart Phillips",
   "license": "ISC",
+  "dependencies": {
+    "prop-types": "^15.5.10",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "whatwg-fetch": "^2.0.3"
+  },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
+    "eslint-config-xo-react": "^0.13.0",
+    "eslint-plugin-react": "^7.3.0",
     "exports-loader": "^0.6.4",
     "imports-loader": "^0.7.1",
-    "webpack": "^3.5.5"
+    "webpack": "^3.5.5",
+    "xo": "^0.18.2"
   },
-  "dependencies": {
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
-    "whatwg-fetch": "^2.0.3"
+  "xo": {
+    "space": true,
+    "envs": [
+      "browser"
+    ],
+    "extends": "xo-react"
   }
 }

@@ -20,7 +20,7 @@ trait ControllerModule {
 
   lazy val authService = new AuthService(defaultSyncCacheApi, databaseService)
 
-  lazy val rootController: IndexController = wire[IndexController]
+  lazy val indexController: IndexController = wire[IndexController]
   lazy val authController: AuthController = wire[AuthController]
   lazy val userAuthAction: UserAuthAction = wire[UserAuthAction]
 
