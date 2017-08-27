@@ -11,28 +11,28 @@ class Index extends React.Component {
     };
 
     this.handleAuthentication = this.handleAuthentication.bind(this);
-    this.checkAuthentication = this.checkAuthentication.bind(this);
+    this.setAuthenticated = this.setAuthenticated.bind(this);
   }
 
   componentWillMount() {
-    this.setState({authenticated: this.checkAuthentication()});
+    this.setState({authenticated: this.handleAuthentication()});
   }
 
-  handleAuthentication(authenticated) {
+  setAuthenticated(authenticated) {
     console.log(authenticated);
     this.setState({authenticated});
   }
 
-  checkAuthentication() {
+  handleAuthentication() {
     fetch('/user', {
       method: 'GET',
       credentials: 'include'
     })
     .then(response => {
       if (response.ok) {
-        this.handleAuthentication(true);
+        this.setAuthenticated(true);
       } else if (response.status === 401) {
-        this.handleAuthentication(false);
+        this.setAuthenticated(false);
       } else {
         throw new Error('Unexpected HTTP response');
       }

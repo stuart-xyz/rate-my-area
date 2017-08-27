@@ -7,7 +7,8 @@ class Login extends React.Component {
     super(props);
     this.state = {
       email: undefined,
-      password: undefined
+      password: undefined,
+      invalidCredentialsSupplied: false
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -20,12 +21,21 @@ class Login extends React.Component {
   handleClick() {
     fetch('/login', {
       method: 'POST',
-      body: JSON.stringify(this.state),
+      body: JSON.stringify({email: this.state.email, password: this.state.password}),
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       }
     })
-    .then(this.props.onAuthentication)
+    .then(response => {
+      if (response.ok) {
+        this.props.onAuthentication();
+      } else if (response.status === 401) {
+        this.setState({invalidCredentialsSupplied: true});
+      } else {
+        throw new Error('Unexpected HTTP response');
+      }
+    })
     .catch(this.handleLoginError);
   }
 
