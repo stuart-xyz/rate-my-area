@@ -1,7 +1,6 @@
 package controllers
 
-import play.api.data.Form
-import play.api.data.Forms._
+import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
 import services.{AuthService, DatabaseService}
 
@@ -10,36 +9,33 @@ import scala.concurrent.{ExecutionContext, Future}
 class AuthController(cc: ControllerComponents, databaseService: DatabaseService, authService: AuthService)(implicit ec: ExecutionContext)
   extends AbstractController(cc) {
 
-  def loginPage = Action {
-    Ok(views.html.login())
-  }
-
   def login: Action[AnyContent] = Action.async { implicit request =>
-    AuthController.loginForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest),
-      userLoginData => {
-        for {
-          cookieOption <- authService.login(userLoginData.email, userLoginData.password)
-        } yield cookieOption match {
-          case Some(cookie) => Redirect("/").withCookies(cookie)
-          case None => Ok(views.html.login(invalidCredentials = true))
-        }
-      }
-    )
-  }
-
-  def signupPage = Action {
-    Ok(views.html.signup())
+    request.body.asJson match {
+      case Some(json) => json.validate[AuthController.UserLoginData].fold(
+        errors => Future.successful(BadRequest("Expected username and password")),
+        userLoginData =>
+          for {
+            cookieOption <- authService.login(userLoginData.email, userLoginData.password)
+          } yield cookieOption match {
+            case Some(cookie) => Ok("Log in successful").withCookies(cookie)
+            case None => Unauthorized("Invalid login credentials provided")
+          }
+      )
+      case None => Future.successful(BadRequest("Expected JSON body"))
+    }
   }
 
   def signup = Action { implicit request =>
-    AuthController.signupForm.bindFromRequest.fold(
-      formWithErrors => BadRequest,
-      userSignupData => {
-        authService.signup(userSignupData.email, userSignupData.password)
-        Redirect("/login")
-      }
-    )
+    request.body.asJson match {
+      case Some(json) => json.validate[AuthController.UserSignupData].fold(
+        errors => BadRequest("Expected username and password"),
+        userSignupData => {
+          authService.signup(userSignupData.email, userSignupData.password)
+          Ok("Sign up successful")
+        }
+      )
+      case None => BadRequest("Expected JSON body")
+    }
   }
 
 }
@@ -47,21 +43,9 @@ class AuthController(cc: ControllerComponents, databaseService: DatabaseService,
 object AuthController {
 
   case class UserLoginData(email: String, password: String)
-
-  val loginForm = Form {
-    mapping(
-      "email" -> nonEmptyText,
-      "password" -> nonEmptyText
-    )(UserSignupData.apply)(UserSignupData.unapply)
-  }
-
   case class UserSignupData(email: String, password: String)
 
-  val signupForm = Form {
-    mapping(
-      "email" -> nonEmptyText,
-      "password" -> nonEmptyText
-    )(UserSignupData.apply)(UserSignupData.unapply)
-  }
+  implicit val userLoginDataFormat: OFormat[UserLoginData] = Json.format[UserLoginData]
+  implicit val userSignupDataFormat: OFormat[UserSignupData] = Json.format[UserSignupData]
 
 }
