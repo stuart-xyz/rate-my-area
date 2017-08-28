@@ -41,13 +41,13 @@ class Index extends React.Component {
   }
 
   render() {
-    let indexView;
+    let view;
     if (this.state.authenticated === undefined) {
-      indexView = null;
+      view = null;
     } else if (this.state.authenticated) {
-      indexView = <Main/>;
+      view = <Main/>;
     } else {
-      indexView = (
+      view = (
         <Login
           onAuthentication={this.handleAuthentication}
         />
@@ -55,7 +55,7 @@ class Index extends React.Component {
     }
     return (
       <div>
-        {indexView}
+        {view}
       </div>
     );
   }

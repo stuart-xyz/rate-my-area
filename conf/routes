@@ -6,6 +6,9 @@
 GET     /           controllers.IndexController.index
 GET     /user       controllers.AuthController.getUser
 
+
+POST    /reviews    controllers.ReviewController.create
+
 + nocsrf
 POST    /login      controllers.AuthController.login
 + nocsrf

@@ -9,7 +9,7 @@
     "watch": "webpack --watch"
   },
   "author": "Stuart Phillips",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
