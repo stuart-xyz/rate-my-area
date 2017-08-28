@@ -7,7 +7,7 @@ class Index extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      authenticated: false
+      authenticated: undefined
     };
 
     this.handleAuthentication = this.handleAuthentication.bind(this);
@@ -41,12 +41,21 @@ class Index extends React.Component {
   }
 
   render() {
-    return (
-      <div>
-        {this.state.authenticated ? <Main/> :
+    let indexView;
+    if (this.state.authenticated === undefined) {
+      indexView = null;
+    } else if (this.state.authenticated) {
+      indexView = <Main/>;
+    } else {
+      indexView = (
         <Login
           onAuthentication={this.handleAuthentication}
-        />}
+        />
+      );
+    }
+    return (
+      <div>
+        {indexView}
       </div>
     );
   }
