@@ -1,5 +1,6 @@
 package services
 
+import controllers.ReviewController.ReviewFormData
 import models.{Review, ReviewTable, User, UserTable}
 import slick.basic.DatabaseConfig
 import slick.jdbc.JdbcProfile
@@ -28,9 +29,10 @@ class DatabaseService(dbConfig: DatabaseConfig[JdbcProfile])(implicit ec: Execut
     dbConfig.db.run(users.filter(_.email.toLowerCase === email.toLowerCase).result.headOption)
   }
 
-  def addReview(user: User, review: Review): Try[Future[Int]] = Try {
+  def addReview(user: User, reviewFormData: ReviewFormData): Try[Future[Int]] = Try {
     dbConfig.db.run {
-      (reviews returning reviews.map(_.id)) += review.copy(userId = user.id)
+      (reviews returning reviews.map(_.id)) +=
+        Review(0, reviewFormData.title, reviewFormData.areaName, reviewFormData.emojiCode, reviewFormData.description, user.id)
     }
   }
 

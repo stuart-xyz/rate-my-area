@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './add-review-form.css';
 
 class AddReviewForm extends React.Component {
@@ -22,14 +23,56 @@ class AddReviewForm extends React.Component {
       headers: {
         'Content-Type': 'application/json'
       }
-    });
+    }).then(response => {
+      if (response.ok) {
+        this.props.onSubmit();
+      } else {
+        throw new Error('Unexpected HTTP response');
+      }
+    })
+    .catch(this.handleLoginError);
   }
 
   render() {
+    const self = this;
     return (
-      <div/>
+      <div>
+        <input
+          placeholder="Title"
+          onChange={function (event) {
+            self.setState({title: event.target.value});
+          }}
+        />
+        <input
+          placeholder="Area name"
+          onChange={function (event) {
+            self.setState({areaName: event.target.value});
+          }}
+        />
+        <input
+          placeholder="Emoji"
+          onChange={function (event) {
+            self.setState({emojiCode: event.target.value});
+          }}
+        />
+        <input
+          placeholder="Description"
+          onChange={function (event) {
+            self.setState({description: event.target.value});
+          }}
+        />
+        <button
+          onClick={this.handleClick}
+        >
+          Submit
+        </button>
+      </div>
     );
   }
 }
+
+AddReviewForm.propTypes = {
+  onSubmit: PropTypes.func.isRequired
+};
 
 export default AddReviewForm;

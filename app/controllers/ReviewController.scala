@@ -1,6 +1,8 @@
 package controllers
 
-import models.{Response, Review}
+import controllers.ReviewController.ReviewFormData
+import models.Response
+import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.{AbstractController, ControllerComponents}
 import services.{DatabaseService, UserAuthAction}
 
@@ -12,10 +14,10 @@ class ReviewController(cc: ControllerComponents, databaseService: DatabaseServic
 
   def create = userAuthAction { implicit request =>
     request.body.asJson match {
-      case Some(json) => json.validate[Review].fold(
+      case Some(json) => json.validate[ReviewFormData].fold(
         errors => BadRequest("Invalid data supplied"),
-        review =>
-          databaseService.addReview(request.user, review) match {
+        reviewFormData =>
+          databaseService.addReview(request.user, reviewFormData) match {
             case Success(_) => Ok(Response("Review added successfully", hasError = false).json)
             case Failure(_) => InternalServerError(Response("Review added successfully", hasError = true).json)
           }
@@ -23,5 +25,12 @@ class ReviewController(cc: ControllerComponents, databaseService: DatabaseServic
       case None => BadRequest(Response("Expected JSON body", hasError = true).json)
     }
   }
+
+}
+
+object ReviewController {
+
+  case class ReviewFormData(title: String, areaName: String, emojiCode: String, description: String)
+  implicit val reviewFormDataFormat: OFormat[ReviewFormData] = Json.format[ReviewFormData]
 
 }

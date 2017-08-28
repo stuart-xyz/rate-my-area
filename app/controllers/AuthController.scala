@@ -1,5 +1,6 @@
 package controllers
 
+import controllers.AuthController.{UserLoginData, UserSignupData}
 import models.Response
 import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
@@ -13,7 +14,7 @@ class AuthController(cc: ControllerComponents, databaseService: DatabaseService,
 
   def login: Action[AnyContent] = Action.async { implicit request =>
     request.body.asJson match {
-      case Some(json) => json.validate[AuthController.UserLoginData].fold(
+      case Some(json) => json.validate[UserLoginData].fold(
         errors => Future.successful(BadRequest("Expected username and password")),
         userLoginData => {
           val resultAttempt = for {
@@ -37,7 +38,7 @@ class AuthController(cc: ControllerComponents, databaseService: DatabaseService,
 
   def signup = Action { implicit request =>
     request.body.asJson match {
-      case Some(json) => json.validate[AuthController.UserSignupData].fold(
+      case Some(json) => json.validate[UserSignupData].fold(
         errors => BadRequest(Response("Expected username and password", hasError = true).json),
         userSignupData =>
           authService.signup(userSignupData.email, userSignupData.password) match {
