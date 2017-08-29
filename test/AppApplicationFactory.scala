@@ -5,7 +5,7 @@ import play.core.DefaultWebCommands
 
 trait AppApplicationFactory extends FakeApplicationFactory {
 
-  private class MacWireApplicationBuilder {
+  private class AppApplicationBuilder {
     def build(): Application = {
       val env = Environment.simple()
       val context = ApplicationLoader.Context(
@@ -20,6 +20,6 @@ trait AppApplicationFactory extends FakeApplicationFactory {
     }
   }
 
-  def fakeApplication(): Application = new MacWireApplicationBuilder().build()
+  def fakeApplication(): Application = new AppApplicationBuilder().build()
 
 }
