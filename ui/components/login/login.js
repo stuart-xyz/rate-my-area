@@ -42,24 +42,30 @@ class Login extends React.Component {
   render() {
     const self = this;
     return (
-      <div className="loginForm">
-        <input
-          placeholder="Email address"
-          onChange={function (event) {
-            self.setState({email: event.target.value});
-          }}
-        />
-        <input
-          placeholder="Password"
-          onChange={function (event) {
-            self.setState({password: event.target.value});
-          }}
-        />
-        <button
-          onClick={this.handleClick}
-        >
-          Login
-        </button>
+      <div>
+        <div className="row">
+          <input
+            placeholder="Email address"
+            onChange={function (event) {
+              self.setState({email: event.target.value});
+            }}
+          />
+        </div>
+        <div className="row">
+          <input
+            placeholder="Password"
+            onChange={function (event) {
+              self.setState({password: event.target.value});
+            }}
+          />
+        </div>
+        <div className="row">
+          <button
+            onClick={this.handleClick}
+          >
+            Login
+          </button>
+        </div>
       </div>
     );
   }

@@ -1,6 +1,8 @@
 import React from 'react';
 import Login from '../login/login';
 import Main from '../main/main';
+import '../../styles/vendor/skeleton.css';
+import '../../styles/vendor/normalize.css';
 import './index.css';
 
 class Index extends React.Component {

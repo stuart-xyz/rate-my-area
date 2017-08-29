@@ -4,3 +4,4 @@ target/
 /.g8/
 /ui/node_modules/
 /public/compiled/
+*.DS_Store

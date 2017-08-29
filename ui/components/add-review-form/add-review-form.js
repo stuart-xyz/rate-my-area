@@ -26,6 +26,12 @@ class AddReviewForm extends React.Component {
     }).then(response => {
       if (response.ok) {
         this.props.onSubmit();
+        this.setState({
+          title: undefined,
+          areaName: undefined,
+          emojiCode: undefined,
+          description: undefined
+        });
       } else {
         throw new Error('Unexpected HTTP response');
       }
@@ -37,35 +43,49 @@ class AddReviewForm extends React.Component {
     const self = this;
     return (
       <div>
-        <input
-          placeholder="Title"
-          onChange={function (event) {
-            self.setState({title: event.target.value});
-          }}
-        />
-        <input
-          placeholder="Area name"
-          onChange={function (event) {
-            self.setState({areaName: event.target.value});
-          }}
-        />
-        <input
-          placeholder="Emoji"
-          onChange={function (event) {
-            self.setState({emojiCode: event.target.value});
-          }}
-        />
-        <input
-          placeholder="Description"
-          onChange={function (event) {
-            self.setState({description: event.target.value});
-          }}
-        />
-        <button
-          onClick={this.handleClick}
-        >
-          Submit
-        </button>
+        <div className="row">
+          <input
+            placeholder="Title"
+            value={this.state.title}
+            onChange={function (event) {
+              self.setState({title: event.target.value});
+            }}
+          />
+        </div>
+        <div className="row">
+          <input
+            placeholder="Area name"
+            value={this.state.areaName}
+            onChange={function (event) {
+              self.setState({areaName: event.target.value});
+            }}
+          />
+        </div>
+        <div className="row">
+          <input
+            placeholder="Emoji"
+            value={this.state.emojiCode}
+            onChange={function (event) {
+              self.setState({emojiCode: event.target.value});
+            }}
+          />
+        </div>
+        <div className="row">
+          <input
+            placeholder="Description"
+            value={this.state.description}
+            onChange={function (event) {
+              self.setState({description: event.target.value});
+            }}
+          />
+        </div>
+        <div className="row">
+          <button
+            onClick={this.handleClick}
+          >
+            Submit
+          </button>
+        </div>
       </div>
     );
   }
