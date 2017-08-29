@@ -42,9 +42,10 @@ class AddReviewForm extends React.Component {
   render() {
     const self = this;
     return (
-      <div>
+      <form>
         <div className="row">
           <input
+            type="text"
             placeholder="Title"
             value={this.state.title}
             onChange={function (event) {
@@ -54,6 +55,7 @@ class AddReviewForm extends React.Component {
         </div>
         <div className="row">
           <input
+            type="text"
             placeholder="Area name"
             value={this.state.areaName}
             onChange={function (event) {
@@ -63,6 +65,7 @@ class AddReviewForm extends React.Component {
         </div>
         <div className="row">
           <input
+            type="text"
             placeholder="Emoji"
             value={this.state.emojiCode}
             onChange={function (event) {
@@ -72,6 +75,7 @@ class AddReviewForm extends React.Component {
         </div>
         <div className="row">
           <input
+            type="text"
             placeholder="Description"
             value={this.state.description}
             onChange={function (event) {
@@ -80,13 +84,14 @@ class AddReviewForm extends React.Component {
           />
         </div>
         <div className="row">
-          <button
+          <input
+            type="submit"
+            value="Post"
+            className="button-primary"
             onClick={this.handleClick}
-          >
-            Submit
-          </button>
+          />
         </div>
-      </div>
+      </form>
     );
   }
 }

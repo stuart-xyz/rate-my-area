@@ -18,7 +18,8 @@ class Login extends React.Component {
     console.log(error);
   }
 
-  handleClick() {
+  handleClick(event) {
+    event.preventDefault();
     fetch('/login', {
       method: 'POST',
       body: JSON.stringify({email: this.state.email, password: this.state.password}),
@@ -42,31 +43,28 @@ class Login extends React.Component {
   render() {
     const self = this;
     return (
-      <div>
-        <div className="row">
-          <input
-            placeholder="Email address"
-            onChange={function (event) {
-              self.setState({email: event.target.value});
-            }}
-          />
-        </div>
-        <div className="row">
-          <input
-            placeholder="Password"
-            onChange={function (event) {
-              self.setState({password: event.target.value});
-            }}
-          />
-        </div>
-        <div className="row">
-          <button
-            onClick={this.handleClick}
-          >
-            Login
-          </button>
-        </div>
-      </div>
+      <form>
+        <input
+          type="text"
+          placeholder="Email address"
+          onChange={function (event) {
+            self.setState({email: event.target.value});
+          }}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          onChange={function (event) {
+            self.setState({password: event.target.value});
+          }}
+        />
+        <input
+          type="submit"
+          value="Login"
+          className="button-primary"
+          onClick={this.handleClick}
+        />
+      </form>
     );
   }
 }

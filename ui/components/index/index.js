@@ -21,7 +21,6 @@ class Index extends React.Component {
   }
 
   setAuthenticated(authenticated) {
-    console.log(authenticated);
     this.setState({authenticated});
   }
 
