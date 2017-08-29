@@ -1,5 +1,21 @@
-@(fullName: String)
+@()
 
-@main("Welcome to Play") {
-  <h1>Welcome back @fullName</h1>
-}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>RateMyArea</title>
+  <link rel="stylesheet" href="@routes.Assets.versioned("compiled/styles.css")">
+  <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
+</head>
+
+<body>
+  <div class="container">
+    <h1>RateMyArea</h1>
+    <div id="reactView"></div>
+  </div>
+</body>
+
+<script src="@routes.Assets.versioned("compiled/bundle.js")"></script>
+
+</html>

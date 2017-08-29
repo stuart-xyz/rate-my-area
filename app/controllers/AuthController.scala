@@ -1,45 +1,57 @@
 package controllers
 
-import play.api.data.Form
-import play.api.data.Forms._
+import controllers.AuthController.{UserLoginData, UserSignupData}
+import models.Response
+import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
-import services.{AuthService, DatabaseService}
+import services.{AuthService, DatabaseService, UserAuthAction}
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
-class AuthController(cc: ControllerComponents, databaseService: DatabaseService, authService: AuthService)(implicit ec: ExecutionContext)
+class AuthController(cc: ControllerComponents, databaseService: DatabaseService, authService: AuthService, userAuthAction: UserAuthAction)(implicit ec: ExecutionContext)
   extends AbstractController(cc) {
 
-  def loginPage = Action {
-    Ok(views.html.login())
-  }
-
   def login: Action[AnyContent] = Action.async { implicit request =>
-    AuthController.loginForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest),
-      userLoginData => {
-        for {
-          cookieOption <- authService.login(userLoginData.email, userLoginData.password)
-        } yield cookieOption match {
-          case Some(cookie) => Redirect("/").withCookies(cookie)
-          case None => Ok(views.html.login(invalidCredentials = true))
-        }
-      }
-    )
-  }
+    request.body.asJson match {
+      case Some(json) => json.validate[UserLoginData].fold(
+        errors => Future.successful(BadRequest("Expected username and password")),
+        userLoginData => {
+          val resultAttempt = for {
+            cookieOptionFuture <- authService.login(userLoginData.email, userLoginData.password)
+          } yield for {
+            cookieOption <- cookieOptionFuture
+          } yield cookieOption match {
+            case Some(cookie) => Ok("Log in successful").withCookies(cookie)
+            case None => Unauthorized("Invalid login credentials provided")
+          }
 
-  def signupPage = Action {
-    Ok(views.html.signup())
+          resultAttempt match {
+            case Success(result) => result
+            case Failure(_) => Future.successful(InternalServerError("Unexpected internal error occurred"))
+          }
+        }
+      )
+      case None => Future.successful(BadRequest("Expected JSON body"))
+    }
   }
 
   def signup = Action { implicit request =>
-    AuthController.signupForm.bindFromRequest.fold(
-      formWithErrors => BadRequest,
-      userSignupData => {
-        authService.signup(userSignupData.email, userSignupData.password)
-        Redirect("/login")
-      }
-    )
+    request.body.asJson match {
+      case Some(json) => json.validate[UserSignupData].fold(
+        errors => BadRequest(Response("Expected username and password", hasError = true).json),
+        userSignupData =>
+          authService.signup(userSignupData.email, userSignupData.password) match {
+            case Success(_) => Ok("Sign up successful")
+            case Failure(_) => InternalServerError(Response("Unexpected internal error occurred", hasError = true).json)
+          }
+      )
+      case None => BadRequest("Expected JSON body")
+    }
+  }
+
+  def getUser = userAuthAction { implicit request =>
+    Ok(Json.stringify(Json.toJson(request.user)))
   }
 
 }
@@ -47,21 +59,9 @@ class AuthController(cc: ControllerComponents, databaseService: DatabaseService,
 object AuthController {
 
   case class UserLoginData(email: String, password: String)
-
-  val loginForm = Form {
-    mapping(
-      "email" -> nonEmptyText,
-      "password" -> nonEmptyText
-    )(UserSignupData.apply)(UserSignupData.unapply)
-  }
-
   case class UserSignupData(email: String, password: String)
 
-  val signupForm = Form {
-    mapping(
-      "email" -> nonEmptyText,
-      "password" -> nonEmptyText
-    )(UserSignupData.apply)(UserSignupData.unapply)
-  }
+  implicit val userLoginDataFormat: OFormat[UserLoginData] = Json.format[UserLoginData]
+  implicit val userSignupDataFormat: OFormat[UserSignupData] = Json.format[UserSignupData]
 
 }

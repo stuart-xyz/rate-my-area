@@ -22,8 +22,8 @@ class UserTable(tag: Tag) extends Table[User](tag, "users") {
   def email = column[String]("email")
   def hashedPassword = column[String]("password")
   def salt = column[String]("salt")
-  def fullName = column[String]("fullname")
-  def isAdmin = column[Boolean]("isadmin")
+  def fullName = column[String]("full_name")
+  def isAdmin = column[Boolean]("is_admin")
 
   override def * = (id, email, hashedPassword, salt, fullName, isAdmin) <> ((User.apply _).tupled, User.unapply)
 }

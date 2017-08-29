@@ -9,7 +9,7 @@ class UserAuthAction(val parser: BodyParser[AnyContent], authService: AuthServic
 
   override def invokeBlock[A](request: Request[A], block: (UserAuthRequest[A]) => Future[Result]): Future[Result] = {
     authService.checkCookie(request) match {
-      case None => Future.successful(Results.Redirect("/login"))
+      case None => Future.successful(Results.Unauthorized)
       case Some(user) => block(UserAuthRequest(user, request))
     }
   }

@@ -11,6 +11,7 @@ import play.api.mvc.{Cookie, RequestHeader}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class AuthService(cacheApi: SyncCacheApi, databaseService: DatabaseService)(implicit ec: ExecutionContext) {
 
@@ -18,16 +19,18 @@ class AuthService(cacheApi: SyncCacheApi, databaseService: DatabaseService)(impl
   private val mda = MessageDigest.getInstance("SHA-512")
   private val cookieHeader = "X-Auth-Token"
 
-  def login(email: String, password: String): Future[Option[Cookie]] = {
-    for {
-      userOption <- databaseService.getUserOption(email)
-    } yield for {
-      user <- userOption
-      if BCrypt.checkpw(password, user.hashedPassword)
-    } yield generateCookie(user)
+  def login(email: String, password: String): Try[Future[Option[Cookie]]] = {
+    databaseService.getUserOption(email).map(userOptionFuture => {
+      userOptionFuture.map(userOption => {
+        userOption.flatMap(user => {
+          if (BCrypt.checkpw(password, user.hashedPassword)) Some(generateCookie(user))
+          else None
+        })
+      })
+    })
   }
 
-  def signup(email: String, password: String): Future[Int] = {
+  def signup(email: String, password: String): Try[Future[Int]] = {
     val hashedPasswordWithSalt = hashPasswordWithSalt(password)
     databaseService.addUser(email, hashedPasswordWithSalt.hashedPassword, hashedPasswordWithSalt.salt)
   }
