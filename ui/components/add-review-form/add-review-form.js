@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {Picker} from 'emoji-mart';
 import './add-review-form.css';
+import '../../styles/vendor/emoji-mart.css';
 
 class AddReviewForm extends React.Component {
   constructor(props) {
@@ -43,17 +45,29 @@ class AddReviewForm extends React.Component {
     const self = this;
     return (
       <form>
-        <div className="row">
-          <input
-            type="text"
-            placeholder="Title"
-            value={this.state.title}
-            onChange={function (event) {
-              self.setState({title: event.target.value});
-            }}
-          />
+        <div className="row form-input">
+          <div className="six columns">
+            <input
+              type="text"
+              placeholder="Title"
+              value={this.state.title}
+              onChange={function (event) {
+                self.setState({title: event.target.value});
+              }}
+            />
+          </div>
+          <div className="six columns">
+            <Picker
+              onClick={function (emoji) {
+                self.setState({emojiCode: emoji.native});
+              }}
+              backgroundImageFn={function () {
+                return '/assets/images/emoji-sheet.png';
+              }}
+            />
+          </div>
         </div>
-        <div className="row">
+        <div className="row form-input">
           <input
             type="text"
             placeholder="Area name"
@@ -63,17 +77,7 @@ class AddReviewForm extends React.Component {
             }}
           />
         </div>
-        <div className="row">
-          <input
-            type="text"
-            placeholder="Emoji"
-            value={this.state.emojiCode}
-            onChange={function (event) {
-              self.setState({emojiCode: event.target.value});
-            }}
-          />
-        </div>
-        <div className="row">
+        <div className="row form-input">
           <input
             type="text"
             placeholder="Description"
@@ -88,7 +92,10 @@ class AddReviewForm extends React.Component {
             type="submit"
             value="Post"
             className="button-primary"
-            onClick={this.handleClick}
+            onClick={function (event) {
+              event.preventDefault();
+              self.handleClick();
+            }}
           />
         </div>
       </form>

@@ -1,0 +1,10 @@
+.review {
+  padding-bottom: 10px;
+  border: 1px;
+  border-color: black;
+  border-style: solid;
+}
+
+.review-title {
+  font-size: 25px;
+}
