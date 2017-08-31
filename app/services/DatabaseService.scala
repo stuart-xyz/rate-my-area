@@ -35,7 +35,7 @@ class DatabaseService(dbConfig: DatabaseConfig[JdbcProfile])(implicit ec: Execut
 
   def addReview(user: User, reviewFormData: ReviewFormData): Try[Future[Int]] = Try {
     dbConfig.db.run {
-      (reviews returning reviews.map(_.id)) += Review(0, reviewFormData.title, reviewFormData.areaName, reviewFormData.emojiCode, reviewFormData.description, user.id)
+      (reviews returning reviews.map(_.id)) += Review(0, reviewFormData.title, reviewFormData.areaName, reviewFormData.description, user.id)
     }
   }
 

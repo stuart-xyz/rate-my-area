@@ -37,7 +37,7 @@ class ReviewController(cc: ControllerComponents, databaseService: DatabaseServic
 
 object ReviewController {
 
-  case class ReviewFormData(title: String, areaName: String, emojiCode: String, description: String)
+  case class ReviewFormData(title: String, areaName: String, description: String)
   implicit val reviewFormDataFormat: OFormat[ReviewFormData] = Json.format[ReviewFormData]
 
 }
