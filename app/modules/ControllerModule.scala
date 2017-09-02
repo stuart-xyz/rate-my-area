@@ -1,6 +1,6 @@
 package modules
 
-import controllers.{AuthController, IndexController, ReviewController}
+import controllers.{AuthController, IndexController, ReviewController, UploadController}
 import play.api.cache.SyncCacheApi
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
 import services.{AuthService, DatabaseService, UserAuthAction}
@@ -24,5 +24,6 @@ trait ControllerModule {
   lazy val indexController: IndexController = wire[IndexController]
   lazy val authController: AuthController = wire[AuthController]
   lazy val reviewController: ReviewController = wire[ReviewController]
+  lazy val uploadController: UploadController = wire[UploadController]
 
 }

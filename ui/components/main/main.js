@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import AddReviewForm from '../add-review-form/add-review-form';
 import ReviewList from '../review-list/review-list';
 import './main.css';
@@ -41,11 +42,15 @@ class Main extends React.Component {
     return (
       <div>
         <h1>Welcome!</h1>
-        <AddReviewForm onSubmit={this.handleReviewSubmit}/>
+        <AddReviewForm onSubmit={this.handleReviewSubmit} userId={this.props.userId}/>
         <ReviewList reviews={this.state.reviews}/>
       </div>
     );
   }
 }
+
+Main.propTypes = {
+  userId: PropTypes.number.isRequired
+};
 
 export default Main;
