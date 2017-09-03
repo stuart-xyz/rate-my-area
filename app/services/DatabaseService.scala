@@ -4,13 +4,12 @@ import controllers.ReviewController.ReviewFormData
 import models.{Review, ReviewTable, User, UserTable}
 import slick.basic.DatabaseConfig
 import slick.jdbc.JdbcProfile
+import MyPostgresProfile.api._
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 class DatabaseService(dbConfig: DatabaseConfig[JdbcProfile])(implicit ec: ExecutionContext) {
-
-  import dbConfig.profile.api._
 
   private val users = TableQuery[UserTable]
   private val reviews = TableQuery[ReviewTable]
@@ -35,7 +34,7 @@ class DatabaseService(dbConfig: DatabaseConfig[JdbcProfile])(implicit ec: Execut
 
   def addReview(user: User, reviewFormData: ReviewFormData): Try[Future[Int]] = Try {
     dbConfig.db.run {
-      (reviews returning reviews.map(_.id)) += Review(0, reviewFormData.title, reviewFormData.areaName, reviewFormData.description, user.id)
+      (reviews returning reviews.map(_.id)) += Review(0, reviewFormData.title, reviewFormData.areaName, reviewFormData.description, reviewFormData.imageUrls, user.id)
     }
   }
 

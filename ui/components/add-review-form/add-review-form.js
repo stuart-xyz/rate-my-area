@@ -32,7 +32,7 @@ class AddReviewForm extends React.Component {
         title: this.state.title,
         areaName: this.state.areaName,
         description: this.state.description,
-        imageUrl
+        imageUrls: [imageUrl]
       }),
       credentials: 'include',
       headers: {
@@ -56,21 +56,33 @@ class AddReviewForm extends React.Component {
   }
 
   handleClick() {
-    const formData = new FormData();
-    formData.append('photo', this.state.files[0].preview);
-    fetch('/upload', {
-      method: 'POST',
-      body: formData,
-      credentials: 'include'
-    }).then(response => {
-      if (response.ok) {
-        debugger;
-        this.postForm('/public/images/' + this.props.userId + '/' + response.body.fileName);
-      } else {
-        throw new Error('Image upload failed');
-      }
-    })
-    .catch(this.handleError);
+    const imagePromise = new Promise((resolve, reject) => {
+      fetch(this.state.files[0].preview, {
+        method: 'GET'
+      }).then(response => {
+        if (response.ok) {
+          resolve(response.blob());
+        } else {
+          reject(new Error('Error retrieving image'));
+        }
+      });
+    });
+    imagePromise.then(blob => {
+      const formData = new FormData();
+      formData.append('photo', blob);
+      fetch('/upload', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include'
+      }).then(response => {
+        if (response.ok) {
+          debugger;
+          this.postForm(response.body.url);
+        } else {
+          throw new Error('Image upload failed');
+        }
+      }).catch(this.handleError);
+    }).catch(this.handleError);
   }
 
   handleDrop(files) {

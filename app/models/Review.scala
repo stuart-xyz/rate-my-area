@@ -1,12 +1,13 @@
 package models
 
 import play.api.libs.json.{Json, OWrites}
-import slick.jdbc.PostgresProfile.api._
+import services.MyPostgresProfile.api._
 
 case class Review(id: Int,
                   title: String,
                   areaName: String,
                   description: String,
+                  imageUrls: List[String],
                   userId: Int)
 
 object Review {
@@ -21,7 +22,8 @@ class ReviewTable(tag: Tag) extends Table[Review](tag, "reviews") {
   def title = column[String]("title")
   def areaName = column[String]("area_name")
   def description = column[String]("description")
+  def imageUrls = column[List[String]]("image_urls")
   def userId = column[Int]("user_id")
 
-  override def * = (id, title, areaName, description, userId) <> ((Review.apply _).tupled, Review.unapply)
+  override def * = (id, title, areaName, description, imageUrls, userId) <> ((Review.apply _).tupled, Review.unapply)
 }

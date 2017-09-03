@@ -14,7 +14,7 @@ class ReviewController(cc: ControllerComponents, databaseService: DatabaseServic
   def create = userAuthAction { implicit request =>
     request.body.asJson match {
       case Some(json) => json.validate[ReviewFormData].fold(
-        errors => BadRequest("Invalid data supplied"),
+        errors => BadRequest(Json.obj("error" -> "Invalid data supplied")),
         reviewFormData =>
           databaseService.addReview(request.user, reviewFormData) match {
             case Success(_) => Ok(Json.obj("message" -> "Review added successfully"))
@@ -36,7 +36,7 @@ class ReviewController(cc: ControllerComponents, databaseService: DatabaseServic
 
 object ReviewController {
 
-  case class ReviewFormData(title: String, areaName: String, description: String)
+  case class ReviewFormData(title: String, areaName: String, description: String, imageUrls: List[String])
   implicit val reviewFormDataFormat: OFormat[ReviewFormData] = Json.format[ReviewFormData]
 
 }
