@@ -6,16 +6,16 @@ class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: undefined,
-      password: undefined,
+      email: '',
+      password: '',
       invalidCredentialsSupplied: false
     };
 
     this.handleClick = this.handleClick.bind(this);
   }
 
-  handleLoginError(error) {
-    console.log(error);
+  componentWillMount() {
+    this.setState({email: this.props.email});
   }
 
   handleClick(event) {
@@ -37,7 +37,7 @@ class Login extends React.Component {
         throw new Error('Unexpected HTTP response');
       }
     })
-    .catch(this.handleLoginError);
+    .catch(err => console.log(err));
   }
 
   render() {
@@ -48,6 +48,7 @@ class Login extends React.Component {
           <input
             type="text"
             placeholder="Email address"
+            value={this.state.email}
             onChange={function (event) {
               self.setState({email: event.target.value});
             }}
@@ -57,10 +58,13 @@ class Login extends React.Component {
           <input
             type="password"
             placeholder="Password"
+            value={this.state.password}
             onChange={function (event) {
               self.setState({password: event.target.value});
             }}
           />
+          {this.state.invalidCredentialsSupplied ?
+            <p className="login-error">Invalid email address or password provided</p> : null}
         </div>
         <div className="row">
           <input
@@ -69,6 +73,15 @@ class Login extends React.Component {
             className="button-primary"
             onClick={this.handleClick}
           />
+          <button
+            value="Signup"
+            className="button signup-button"
+            onClick={function () {
+              self.props.onSignupClick(self.state.email);
+            }}
+          >
+            Signup
+          </button>
         </div>
       </form>
     );
@@ -76,7 +89,9 @@ class Login extends React.Component {
 }
 
 Login.propTypes = {
-  onAuthentication: PropTypes.func.isRequired
+  onAuthentication: PropTypes.func.isRequired,
+  onSignupClick: PropTypes.func.isRequired,
+  email: PropTypes.string.isRequired
 };
 
 export default Login;

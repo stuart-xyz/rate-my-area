@@ -1,0 +1,21 @@
+.signup-error {
+  color: #B80000;
+  font-weight: bold;
+  margin-bottom: 0;
+  padding-top: 5px;
+}
+
+.login-button {
+  margin-left: 5px;
+}
+
+.signup-form .signup-button.disabled {
+  background-color: lightgray;
+  border-color: lightgray;
+  cursor: not-allowed;
+}
+
+.signup-form .signup-button.disabled:hover {
+  background-color: lightgray;
+  border-color: lightgray;
+}

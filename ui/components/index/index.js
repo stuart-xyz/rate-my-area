@@ -1,5 +1,6 @@
 import React from 'react';
 import Login from '../login/login';
+import Signup from '../signup/signup';
 import Main from '../main/main';
 import '../../styles/vendor/skeleton.css';
 import '../../styles/vendor/normalize.css';
@@ -10,11 +11,16 @@ class Index extends React.Component {
     super(props);
     this.state = {
       authenticated: undefined,
-      userId: undefined
+      userId: undefined,
+      showSignupForm: false,
+      email: ''
     };
 
     this.handleAuthentication = this.handleAuthentication.bind(this);
     this.setAuthenticated = this.setAuthenticated.bind(this);
+    this.handleSignupClick = this.handleSignupClick.bind(this);
+    this.handleSignup = this.handleSignup.bind(this);
+    this.handleLoginClick = this.handleLoginClick.bind(this);
   }
 
   componentWillMount() {
@@ -23,6 +29,18 @@ class Index extends React.Component {
 
   setAuthenticated(authenticated, userId = undefined) {
     this.setState({authenticated, userId});
+  }
+
+  handleSignupClick(email) {
+    this.setState({showSignupForm: true, email});
+  }
+
+  handleLoginClick(email) {
+    this.setState({showSignupForm: false, email});
+  }
+
+  handleSignup(email) {
+    this.setState({showSignupForm: false, email});
   }
 
   handleAuthentication() {
@@ -50,18 +68,24 @@ class Index extends React.Component {
       view = null;
     } else if (this.state.authenticated) {
       view = <Main userId={this.state.userId}/>;
+    } else if (this.state.showSignupForm) {
+      view = (
+        <Signup
+          onSignup={this.handleSignup}
+          onLoginClick={this.handleLoginClick}
+          email={this.state.email}
+        />
+      );
     } else {
       view = (
         <Login
           onAuthentication={this.handleAuthentication}
+          onSignupClick={this.handleSignupClick}
+          email={this.state.email}
         />
       );
     }
-    return (
-      <div>
-        {view}
-      </div>
-    );
+    return <div>{view}</div>;
   }
 }
 
