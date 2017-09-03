@@ -17,7 +17,7 @@ libraryDependencies ++= Seq(
   "com.softwaremill.macwire" %% "proxy" % "2.3.0",
   "com.typesafe.play" %% "play-slick" % "3.0.1",
   "com.typesafe.play" %% "play-slick-evolutions" % "3.0.1",
-  "com.github.tminglei" %% "slick-pg" % "0.15.3",
+  "org.postgresql" % "postgresql" % "9.4.1207.jre7",
   "de.svenkubiak" % "jBCrypt" % "0.4.1",
   "com.amazonaws" % "aws-java-sdk-s3" % "1.11.186",
   "com.h2database" % "h2" % "1.4.196" % Test,
