@@ -1,5 +1,7 @@
 package modules
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider
+import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import controllers.{AuthController, IndexController, ReviewController, UploadController}
 import play.api.ApplicationLoader.Context
 import play.api.Configuration
@@ -20,9 +22,12 @@ trait ControllerModule {
   def bodyParser: BodyParser[AnyContent]
   def defaultSyncCacheApi: SyncCacheApi
   def appConfig: Configuration
+  def context: Context
+
+  private val s3Client = new S3ClientWrapper(appConfig, context.environment.mode)
 
   lazy val authService = new AuthService(defaultSyncCacheApi, databaseService)
-  lazy val uploadService = new UploadService(appConfig)
+  lazy val uploadService = new UploadService(appConfig, s3Client)
   lazy val userAuthAction: UserAuthAction = wire[UserAuthAction]
 
   lazy val indexController: IndexController = wire[IndexController]

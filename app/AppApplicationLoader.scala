@@ -21,7 +21,7 @@ class AppApplicationLoader extends ApplicationLoader {
 
 }
 
-class AppComponents(context: Context) extends BuiltInComponentsFromContext(context)
+class AppComponents(val context: Context) extends BuiltInComponentsFromContext(context)
   with HttpFiltersComponents
   with AssetsComponents
   with EhCacheComponents
