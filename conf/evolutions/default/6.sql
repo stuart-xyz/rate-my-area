@@ -1,9 +1,13 @@
-# Reviews schema
+# Image URLs schema
 
 # --- !Ups
 
-ALTER TABLE reviews ADD COLUMN image_urls varchar(255)[] NOT NULL DEFAULT array[]::varchar(255)[];
+CREATE TABLE image_urls (
+    id bigserial primary key,
+    url varchar(255) NOT NULL,
+    review_id bigint references reviews(id)
+);
 
 # --- !Downs
 
-ALTER TABLE reviews DROP COLUMN image_urls;
+DROP TABLE image_urls;
