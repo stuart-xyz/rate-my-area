@@ -7,9 +7,9 @@ class AddReviewForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: undefined,
-      areaName: undefined,
-      description: undefined,
+      title: '',
+      areaName: '',
+      description: '',
       files: []
     };
 
@@ -42,9 +42,9 @@ class AddReviewForm extends React.Component {
       if (response.ok) {
         this.props.onSubmit();
         this.setState({
-          title: undefined,
-          areaName: undefined,
-          description: undefined,
+          title: '',
+          areaName: '',
+          description: '',
           files: []
         });
         this.state.files.forEach(file => window.URL.revokeObjectURL(file.preview));
@@ -76,8 +76,10 @@ class AddReviewForm extends React.Component {
         credentials: 'include'
       }).then(response => {
         if (response.ok) {
-          debugger;
-          this.postForm(response.body.url);
+          const jsonPromise = response.json();
+          jsonPromise
+          .then(json => this.postForm(json.url))
+          .catch(this.handleError);
         } else {
           throw new Error('Image upload failed');
         }

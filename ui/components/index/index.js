@@ -32,14 +32,16 @@ class Index extends React.Component {
     })
     .then(response => {
       if (response.ok) {
-        this.setAuthenticated(true, response.body.id);
+        const jsonPromise = response.json();
+        jsonPromise
+        .then(json => this.setAuthenticated(true, json.id))
+        .catch(err => console.log(err));
       } else if (response.status === 401) {
         this.setAuthenticated(false);
       } else {
         throw new Error('User authentication check failed');
       }
-    })
-    .catch(err => console.log(err));
+    }).catch(err => console.log(err));
   }
 
   render() {

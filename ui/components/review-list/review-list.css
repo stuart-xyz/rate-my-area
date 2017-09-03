@@ -1,5 +1,5 @@
 .review {
-  padding-bottom: 10px;
+  padding: 10px;
   border: 1px;
   border-color: black;
   border-style: solid;
@@ -7,4 +7,12 @@
 
 .review-title {
   font-size: 25px;
+}
+
+.review-photos img {
+  max-width: 200px;
+}
+
+.review-list {
+  padding-bottom: 50px;
 }

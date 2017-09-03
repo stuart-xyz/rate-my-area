@@ -28,7 +28,7 @@ class ReviewController(cc: ControllerComponents, databaseService: DatabaseServic
   def list: Action[AnyContent] = userAuthAction.async { implicit request =>
     databaseService.listReviews match {
       case Success(result) => result.map(reviews => Ok(Json.toJson(reviews)))
-      case Failure(_) => Future.successful(InternalServerError(Json.obj("error"-> "Unexpected internal errory")))
+      case Failure(_) => Future.successful(InternalServerError(Json.obj("error"-> "Unexpected internal error")))
     }
   }
 
