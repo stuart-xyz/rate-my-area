@@ -1,0 +1,15 @@
+.form-input {
+  padding-bottom: 10px;
+}
+
+.file-upload-button {
+  margin-top: 5px;
+}
+
+.preview-image {
+  width: 200px;
+}
+
+.dropzone-text {
+  padding: 10px;
+}

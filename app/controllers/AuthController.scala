@@ -1,7 +1,6 @@
 package controllers
 
 import controllers.AuthController.{UserLoginData, UserSignupData}
-import models.Response
 import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
 import services.{AuthService, DatabaseService, UserAuthAction}
@@ -39,11 +38,11 @@ class AuthController(cc: ControllerComponents, databaseService: DatabaseService,
   def signup = Action { implicit request =>
     request.body.asJson match {
       case Some(json) => json.validate[UserSignupData].fold(
-        errors => BadRequest(Response("Expected username and password", hasError = true).json),
+        errors => BadRequest(Json.obj("error" -> "Expected username and password")),
         userSignupData =>
           authService.signup(userSignupData.email, userSignupData.password) match {
             case Success(_) => Ok("Sign up successful")
-            case Failure(_) => InternalServerError(Response("Unexpected internal error occurred", hasError = true).json)
+            case Failure(_) => InternalServerError(Json.obj("error" -> "Unexpected internal error occurred"))
           }
       )
       case None => BadRequest("Expected JSON body")

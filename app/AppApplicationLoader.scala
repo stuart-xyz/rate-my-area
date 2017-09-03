@@ -21,7 +21,7 @@ class AppApplicationLoader extends ApplicationLoader {
 
 }
 
-class AppComponents(context: Context) extends BuiltInComponentsFromContext(context)
+class AppComponents(val context: Context) extends BuiltInComponentsFromContext(context)
   with HttpFiltersComponents
   with AssetsComponents
   with EhCacheComponents
@@ -39,6 +39,7 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   lazy val thisHttpErrorHandler: HttpErrorHandler = httpErrorHandler
   lazy val bodyParser: BodyParser[AnyContent] = playBodyParsers.default
   lazy val defaultSyncCacheApi: SyncCacheApi = defaultCacheApi.sync
+  lazy val appConfig: Configuration = configuration
 
   lazy val router: Router = {
     implicit val prefix: String = "/"

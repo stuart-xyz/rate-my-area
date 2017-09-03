@@ -1,7 +1,6 @@
 package controllers
 
 import controllers.ReviewController.ReviewFormData
-import models.Response
 import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
 import services.{DatabaseService, UserAuthAction}
@@ -15,21 +14,21 @@ class ReviewController(cc: ControllerComponents, databaseService: DatabaseServic
   def create = userAuthAction { implicit request =>
     request.body.asJson match {
       case Some(json) => json.validate[ReviewFormData].fold(
-        errors => BadRequest("Invalid data supplied"),
+        errors => BadRequest(Json.obj("error" -> "Invalid data supplied")),
         reviewFormData =>
           databaseService.addReview(request.user, reviewFormData) match {
-            case Success(_) => Ok(Response("Review added successfully", hasError = false).json)
-            case Failure(_) => InternalServerError(Response("Unexpected internal error", hasError = true).json)
+            case Success(_) => Ok(Json.obj("message" -> "Review added successfully"))
+            case Failure(_) => InternalServerError(Json.obj("error" -> "Unexpected internal error"))
           }
       )
-      case None => BadRequest(Response("Expected JSON body", hasError = true).json)
+      case None => BadRequest(Json.obj("error" -> "Expected JSON body"))
     }
   }
 
-  def list: Action[AnyContent] = Action.async { implicit request =>
+  def list: Action[AnyContent] = userAuthAction.async { implicit request =>
     databaseService.listReviews match {
       case Success(result) => result.map(reviews => Ok(Json.toJson(reviews)))
-      case Failure(_) => Future.successful(InternalServerError(Response("Unexpected internal errory", hasError = true).json))
+      case Failure(_) => Future.successful(InternalServerError(Json.obj("error"-> "Unexpected internal error")))
     }
   }
 
@@ -37,7 +36,7 @@ class ReviewController(cc: ControllerComponents, databaseService: DatabaseServic
 
 object ReviewController {
 
-  case class ReviewFormData(title: String, areaName: String, emojiCode: String, description: String)
+  case class ReviewFormData(title: String, areaName: String, description: String, imageUrls: List[String])
   implicit val reviewFormDataFormat: OFormat[ReviewFormData] = Json.format[ReviewFormData]
 
 }

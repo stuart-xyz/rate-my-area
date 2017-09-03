@@ -9,7 +9,8 @@ class Index extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      authenticated: undefined
+      authenticated: undefined,
+      userId: undefined
     };
 
     this.handleAuthentication = this.handleAuthentication.bind(this);
@@ -20,8 +21,8 @@ class Index extends React.Component {
     this.setState({authenticated: this.handleAuthentication()});
   }
 
-  setAuthenticated(authenticated) {
-    this.setState({authenticated});
+  setAuthenticated(authenticated, userId = undefined) {
+    this.setState({authenticated, userId});
   }
 
   handleAuthentication() {
@@ -31,14 +32,16 @@ class Index extends React.Component {
     })
     .then(response => {
       if (response.ok) {
-        this.setAuthenticated(true);
+        const jsonPromise = response.json();
+        jsonPromise
+        .then(json => this.setAuthenticated(true, json.id))
+        .catch(err => console.log(err));
       } else if (response.status === 401) {
         this.setAuthenticated(false);
       } else {
-        throw new Error('Unexpected HTTP response');
+        throw new Error('User authentication check failed');
       }
-    })
-    .catch(err => console.log(err));
+    }).catch(err => console.log(err));
   }
 
   render() {
@@ -46,7 +49,7 @@ class Index extends React.Component {
     if (this.state.authenticated === undefined) {
       view = null;
     } else if (this.state.authenticated) {
-      view = <Main/>;
+      view = <Main userId={this.state.userId}/>;
     } else {
       view = (
         <Login
