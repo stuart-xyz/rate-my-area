@@ -40,7 +40,7 @@ class AuthController(cc: ControllerComponents, databaseService: DatabaseService,
       case Some(json) => json.validate[UserSignupData].fold(
         errors => BadRequest(Json.obj("error" -> "Expected username and password")),
         userSignupData =>
-          authService.signup(userSignupData.email, userSignupData.password) match {
+          authService.signup(userSignupData.email, userSignupData.username, userSignupData.password) match {
             case Success(_) => Ok("Sign up successful")
             case Failure(_) => InternalServerError(Json.obj("error" -> "Unexpected internal error occurred"))
           }
@@ -58,7 +58,7 @@ class AuthController(cc: ControllerComponents, databaseService: DatabaseService,
 object AuthController {
 
   case class UserLoginData(email: String, password: String)
-  case class UserSignupData(email: String, password: String)
+  case class UserSignupData(email: String, username: String, password: String)
 
   implicit val userLoginDataFormat: OFormat[UserLoginData] = Json.format[UserLoginData]
   implicit val userSignupDataFormat: OFormat[UserSignupData] = Json.format[UserSignupData]

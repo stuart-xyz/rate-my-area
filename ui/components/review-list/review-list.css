@@ -16,3 +16,10 @@
 .review-list {
   padding-bottom: 50px;
 }
+
+.username {
+  color: grey;
+  font-style: italic;
+  padding-left: 15px;
+  font-size: 20px;
+}

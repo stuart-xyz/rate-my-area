@@ -38,7 +38,8 @@ class AddReviewForm extends React.Component {
       headers: {
         'Content-Type': 'application/json'
       }
-    }).then(response => {
+    })
+    .then(response => {
       if (response.ok) {
         this.props.onSubmit();
         this.setState({
@@ -59,7 +60,8 @@ class AddReviewForm extends React.Component {
     const imagePromise = new Promise((resolve, reject) => {
       fetch(this.state.files[0].preview, {
         method: 'GET'
-      }).then(response => {
+      })
+      .then(response => {
         if (response.ok) {
           resolve(response.blob());
         } else {
@@ -67,6 +69,7 @@ class AddReviewForm extends React.Component {
         }
       });
     });
+
     imagePromise.then(blob => {
       const formData = new FormData();
       formData.append('photo', blob);
@@ -74,7 +77,8 @@ class AddReviewForm extends React.Component {
         method: 'POST',
         body: formData,
         credentials: 'include'
-      }).then(response => {
+      })
+      .then(response => {
         if (response.ok) {
           const jsonPromise = response.json();
           jsonPromise
@@ -83,8 +87,10 @@ class AddReviewForm extends React.Component {
         } else {
           throw new Error('Image upload failed');
         }
-      }).catch(this.handleError);
-    }).catch(this.handleError);
+      })
+      .catch(this.handleError);
+    })
+    .catch(this.handleError);
   }
 
   handleDrop(files) {
@@ -166,7 +172,6 @@ class AddReviewForm extends React.Component {
         <div className="one-half column">
           <div className="row">
             {this.state.files.map(file => {
-              console.log(file);
               const image = <img key={imageKey} src={file.preview} className="preview-image"/>;
               imageKey += 1;
               return image;
