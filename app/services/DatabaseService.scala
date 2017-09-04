@@ -6,7 +6,6 @@ import slick.basic.DatabaseConfig
 import slick.jdbc.JdbcProfile
 import slick.jdbc.PostgresProfile.api._
 
-import scala.collection.immutable
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
@@ -20,9 +19,9 @@ class DatabaseService(dbConfig: DatabaseConfig[JdbcProfile])(implicit ec: Execut
     dbConfig.db.run(users.result)
   }
 
-  def addUser(email: String, hashedPassword: String, salt: String): Try[Future[Int]] = Try {
+  def addUser(email: String, username: String, hashedPassword: String, salt: String): Try[Future[Int]] = Try {
     dbConfig.db.run {
-      (users returning users.map(_.id)) += User(0, email, hashedPassword, salt, "name", isAdmin = true)
+      (users returning users.map(_.id)) += User(0, email, hashedPassword, salt, username)
     }
   }
 

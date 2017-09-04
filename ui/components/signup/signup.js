@@ -11,13 +11,16 @@ class Signup extends React.Component {
       password: '',
       passwordConfirm: '',
       invalidEmail: false,
-      signupAttempted: false
+      signupAttempted: false,
+      takenUsernames: [],
+      takenEmails: []
     };
 
     this.handleClick = this.handleClick.bind(this);
     this.validatePasswordMatch = this.validatePasswordMatch.bind(this);
     this.validateEmail = this.validateEmail.bind(this);
     this.validatePassword = this.validatePassword.bind(this);
+    this.validateUsername = this.validateUsername.bind(this);
   }
 
   componentWillMount() {
@@ -26,6 +29,10 @@ class Signup extends React.Component {
 
   validatePasswordMatch() {
     return this.state.password === this.state.passwordConfirm;
+  }
+
+  validateUsername() {
+    return this.state.signupAttempted ? this.state.username !== '' : true;
   }
 
   validateEmail() {
@@ -43,7 +50,7 @@ class Signup extends React.Component {
       if (this.validateEmail() && this.validatePasswordMatch()) {
         fetch('/signup', {
           method: 'POST',
-          body: JSON.stringify({email: this.state.email, password: this.state.password}),
+          body: JSON.stringify({email: this.state.email, username: this.state.username, password: this.state.password}),
           headers: {
             'Content-Type': 'application/json'
           }
@@ -51,6 +58,16 @@ class Signup extends React.Component {
         .then(response => {
           if (response.ok) {
             this.props.onSignup(this.state.email);
+          } else if (response.status === 409) { // Conflict HTTP code
+            response.json().then(json => {
+              if (json.usernameTaken) {
+                const newTakenUsernames = this.state.takenUsernames.concat(this.state.username);
+                this.setState({takenUsernames: newTakenUsernames});
+              } else if (json.emailTaken) {
+                const newTakenEmails = this.state.takenEmails.concat(this.state.email);
+                this.setState({takenEmails: newTakenEmails});
+              }
+            });
           } else {
             throw new Error('Unexpected HTTP response');
           }
@@ -100,12 +117,14 @@ class Signup extends React.Component {
               self.setState({passwordConfirm: event.target.value});
             }}
           />
+          {this.validateUsername() ? null :
+          <p className="signup-error">Username cannot be empty</p>}
           {this.validateEmail() ? null :
-          <p className="signup-error">Invalid email address provided</p>}
+          <p className="signup-error">Invalid email address</p>}
+          {this.validatePassword() ? null :
+          <p className="signup-error">Password cannot be empty</p>}
           {this.validatePasswordMatch() ? null :
           <p className="signup-error">Passwords do not match</p>}
-          {this.validatePassword() ? null :
-          <p className="signup-error">Invalid password</p>}
         </div>
         <div className="row">
           <input

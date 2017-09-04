@@ -7,8 +7,7 @@ case class User(id: Int,
                 email: String,
                 hashedPassword: String,
                 salt: String,
-                fullName: String,
-                isAdmin: Boolean)
+                username: String)
 
 object User {
 
@@ -22,8 +21,7 @@ class UserTable(tag: Tag) extends Table[User](tag, "users") {
   def email = column[String]("email")
   def hashedPassword = column[String]("password")
   def salt = column[String]("salt")
-  def fullName = column[String]("full_name")
-  def isAdmin = column[Boolean]("is_admin")
+  def username = column[String]("username")
 
-  override def * = (id, email, hashedPassword, salt, fullName, isAdmin) <> ((User.apply _).tupled, User.unapply)
+  override def * = (id, email, hashedPassword, salt, username) <> ((User.apply _).tupled, User.unapply)
 }
