@@ -30,7 +30,7 @@ class AuthService(cacheApi: SyncCacheApi, databaseService: DatabaseService)(impl
     })
   }
 
-  def signup(email: String, username: String, password: String): Try[Future[Int]] = {
+  def signup(email: String, username: String, password: String): Future[Try[Int]] = {
     val hashedPasswordWithSalt = hashPasswordWithSalt(password)
     databaseService.addUser(email, username, hashedPasswordWithSalt.hashedPassword, hashedPasswordWithSalt.salt)
   }

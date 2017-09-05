@@ -8,8 +8,7 @@ case class DisplayedReview(review: Review,
 
 object DisplayedReview {
 
-  implicit val writes: Writes[DisplayedReview] =
-    (displayedReview: DisplayedReview) => {
+  implicit val writes: Writes[DisplayedReview] = (displayedReview: DisplayedReview) => {
       val review = displayedReview.review
       val username = displayedReview.username
       val imageUrls = displayedReview.imageUrls

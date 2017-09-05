@@ -47,7 +47,7 @@ class Signup extends React.Component {
   handleClick(event) {
     event.preventDefault();
     this.setState({signupAttempted: true}, () => {
-      if (this.validateEmail() && this.validatePasswordMatch()) {
+      if (this.validateEmail() && this.validatePasswordMatch() && this.validatePassword()) {
         fetch('/signup', {
           method: 'POST',
           body: JSON.stringify({email: this.state.email, username: this.state.username, password: this.state.password}),
@@ -128,10 +128,10 @@ class Signup extends React.Component {
         </div>
         <div className="row">
           <input
-            disabled={!this.validateEmail() || !this.validatePasswordMatch()}
+            disabled={!this.validateEmail() || !this.validatePasswordMatch() || !this.validatePassword()}
             type="submit"
             value="Signup"
-            className={!this.validateEmail() || !this.validatePasswordMatch() ? 'button-primary signup-button disabled' : 'button-primary signup-button'}
+            className={!this.validateEmail() || !this.validatePasswordMatch() || !this.validatePassword() ? 'button-primary signup-button disabled' : 'button-primary signup-button'}
             onClick={this.handleClick}
           />
           <button
