@@ -21,6 +21,8 @@ class Signup extends React.Component {
     this.validateEmail = this.validateEmail.bind(this);
     this.validatePassword = this.validatePassword.bind(this);
     this.validateUsername = this.validateUsername.bind(this);
+    this.usernameAvailable = this.usernameAvailable.bind(this);
+    this.emailAvailable = this.emailAvailable.bind(this);
   }
 
   componentWillMount() {
@@ -44,6 +46,19 @@ class Signup extends React.Component {
     return this.state.signupAttempted ? this.state.password !== '' : true;
   }
 
+  usernameAvailable() {
+    return this.state.takenUsernames.indexOf(this.state.username) === -1;
+  }
+
+  emailAvailable() {
+    return this.state.takenEmails.indexOf(this.state.email) === -1;
+  }
+
+  submitEnabled() {
+    return this.validateEmail() && this.validatePasswordMatch() && this.validatePassword() &&
+      this.emailAvailable() && this.usernameAvailable();
+  }
+
   handleClick(event) {
     event.preventDefault();
     this.setState({signupAttempted: true}, () => {
@@ -60,10 +75,10 @@ class Signup extends React.Component {
             this.props.onSignup(this.state.email);
           } else if (response.status === 409) { // Conflict HTTP code
             response.json().then(json => {
-              if (json.usernameTaken) {
+              if (json.error === 'username_uniqueness') {
                 const newTakenUsernames = this.state.takenUsernames.concat(this.state.username);
                 this.setState({takenUsernames: newTakenUsernames});
-              } else if (json.emailTaken) {
+              } else if (json.error === 'email_uniqueness') {
                 const newTakenEmails = this.state.takenEmails.concat(this.state.email);
                 this.setState({takenEmails: newTakenEmails});
               }
@@ -119,8 +134,12 @@ class Signup extends React.Component {
           />
           {this.validateUsername() ? null :
           <p className="signup-error">Username cannot be empty</p>}
+          {this.usernameAvailable() ? null :
+          <p className="signup-error">Username is not available</p>}
           {this.validateEmail() ? null :
           <p className="signup-error">Invalid email address</p>}
+          {this.emailAvailable() ? null :
+          <p className="signup-error">Email address is already in use</p>}
           {this.validatePassword() ? null :
           <p className="signup-error">Password cannot be empty</p>}
           {this.validatePasswordMatch() ? null :
@@ -128,10 +147,10 @@ class Signup extends React.Component {
         </div>
         <div className="row">
           <input
-            disabled={!this.validateEmail() || !this.validatePasswordMatch() || !this.validatePassword()}
+            disabled={!this.submitEnabled()}
             type="submit"
             value="Signup"
-            className={!this.validateEmail() || !this.validatePasswordMatch() || !this.validatePassword() ? 'button-primary signup-button disabled' : 'button-primary signup-button'}
+            className={this.submitEnabled() ? 'button-primary signup-button' : 'button-primary signup-button disabled'}
             onClick={this.handleClick}
           />
           <button

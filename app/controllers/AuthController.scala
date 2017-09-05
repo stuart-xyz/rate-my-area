@@ -46,7 +46,7 @@ class AuthController(cc: ControllerComponents, databaseService: DatabaseService,
             result <- authService.signup(userSignupData.email, userSignupData.username, userSignupData.password)
           } yield result match {
             case Success(_) => Ok(Json.obj("message" -> "Signup successful"))
-            case Failure(e: PSQLException) => BadRequest(Json.obj("error" -> e.getServerErrorMessage.toString))
+            case Failure(e: PSQLException) => Conflict(Json.obj("error" -> e.getServerErrorMessage.getConstraint))
             case Failure(_) => InternalServerError(Json.obj("error" -> "Unexpected internal error occurred"))
           }
       )
