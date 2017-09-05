@@ -14,6 +14,9 @@ class Login extends React.Component {
     };
 
     this.handleClick = this.handleClick.bind(this);
+    this.validateEmail = this.validateEmail.bind(this);
+    this.validatePassword = this.validatePassword.bind(this);
+    this.submitEnabled = this.submitEnabled.bind(this);
   }
 
   componentWillMount() {
@@ -27,6 +30,10 @@ class Login extends React.Component {
 
   validatePassword() {
     return this.state.loginAttempted ? this.state.password !== '' : true;
+  }
+
+  submitEnabled() {
+    return this.validateEmail() && this.validatePassword();
   }
 
   handleClick(event) {
@@ -87,10 +94,10 @@ class Login extends React.Component {
         </div>
         <div className="row">
           <input
-            disabled={!this.validateEmail() || !this.validatePassword()}
+            disabled={!this.submitEnabled()}
             type="submit"
             value="Login"
-            className={!this.validateEmail() || !this.validatePassword() ? 'button-primary login-button disabled' : 'button-primary login-button'}
+            className={this.submitEnabled() ? 'button-primary login-button' : 'button-primary login-button disabled'}
             onClick={this.handleClick}
           />
           <button

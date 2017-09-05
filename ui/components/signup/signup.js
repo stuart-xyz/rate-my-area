@@ -23,6 +23,7 @@ class Signup extends React.Component {
     this.validateUsername = this.validateUsername.bind(this);
     this.usernameAvailable = this.usernameAvailable.bind(this);
     this.emailAvailable = this.emailAvailable.bind(this);
+    this.submitEnabled = this.submitEnabled.bind(this);
   }
 
   componentWillMount() {
