@@ -16,24 +16,24 @@ class AuthController(cc: ControllerComponents, databaseService: DatabaseService,
   def login: Action[AnyContent] = Action.async { implicit request =>
     request.body.asJson match {
       case Some(json) => json.validate[UserLoginData].fold(
-        errors => Future.successful(BadRequest("Expected username and password")),
+        errors => Future.successful(BadRequest(Json.obj("error" -> "Expected username and password"))),
         userLoginData => {
           val resultAttempt = for {
             cookieOptionFuture <- authService.login(userLoginData.email, userLoginData.password)
           } yield for {
             cookieOption <- cookieOptionFuture
           } yield cookieOption match {
-            case Some(cookie) => Ok("Log in successful").withCookies(cookie)
-            case None => Unauthorized("Invalid login credentials provided")
+            case Some(cookie) => Ok(Json.obj("message" -> "Log in successful")).withCookies(cookie)
+            case None => Unauthorized(Json.obj("error" -> "Invalid login credentials provided"))
           }
 
           resultAttempt match {
             case Success(result) => result
-            case Failure(_) => Future.successful(InternalServerError("Unexpected internal error occurred"))
+            case Failure(_) => Future.successful(InternalServerError(Json.obj("error" -> "Unexpected internal error occurred")))
           }
         }
       )
-      case None => Future.successful(BadRequest("Expected JSON body"))
+      case None => Future.successful(BadRequest(Json.obj("error" -> "Expected JSON body")))
     }
   }
 
@@ -55,7 +55,7 @@ class AuthController(cc: ControllerComponents, databaseService: DatabaseService,
   }
 
   def getUser = userAuthAction { implicit request =>
-    Ok(Json.stringify(Json.toJson(request.user)))
+    Ok(Json.toJson(request.user))
   }
 
 }

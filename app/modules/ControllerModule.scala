@@ -1,7 +1,5 @@
 package modules
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider
-import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import controllers.{AuthController, IndexController, ReviewController, UploadController}
 import play.api.ApplicationLoader.Context
 import play.api.Configuration
