@@ -4,7 +4,7 @@ import play.api.test._
 
 class IndexControllerSpec extends PlaySpec with BaseOneAppPerTest with AppApplicationFactory {
 
-  "IndexController GET" should {
+  "GET /" should {
 
     "return the React view" in {
       val request = FakeRequest(GET, "/")
