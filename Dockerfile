@@ -21,6 +21,7 @@ RUN unzip /usr/src/rate-my-area/target/universal/rate-my-area-1.0-SNAPSHOT.zip
 # Copy config
 
 ARG BUILD_ENV
+RUN touch docker-conf/dev/nginx.conf
 RUN cp docker-conf/$BUILD_ENV/nginx.conf /etc/nginx/nginx.conf
 RUN cp docker-conf/$BUILD_ENV/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN mkdir -p /var/log/supervisor
