@@ -1,0 +1,1 @@
+* * * * * root /usr/src/ratemyarea/docker-conf/certbot-renew.sh >> /var/log/cron.log 2>&1
