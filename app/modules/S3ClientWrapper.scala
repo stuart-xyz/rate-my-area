@@ -9,7 +9,9 @@ import play.api.Configuration
 
 class S3ClientWrapper(appConfig: Configuration, mode: play.api.Mode) {
 
-  private val cloudfrontUrl = appConfig.get[String]("cloudfront-url")
+  private val cloudfrontUrl =
+    if (mode == play.api.Mode.Test) ""
+    else appConfig.get[String]("cloudfront-url")
 
   private val client: Option[AmazonS3] =
     if (mode == play.api.Mode.Test) None
