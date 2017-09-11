@@ -8,7 +8,7 @@ class ReviewControllerSpec extends PlaySpec with AuthenticatedUser with TestHelp
     "title" -> "title",
     "areaName" -> "area",
     "description" -> "description",
-    "imageUrls" -> Json.arr("http://image.stuartp.io")
+    "imageUrls" -> Json.arr("https://image.user-content.ratemyarea.stuartp.io")
   )
 
   "GET /reviews" should {
