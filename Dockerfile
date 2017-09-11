@@ -2,7 +2,7 @@ FROM stuartxyz/scala-web-app
 
 # Install extra pre-requisites
 
-RUN apt-get install -y supervisor
+RUN apt-get install -y supervisor unzip
 
 # Add source
 
@@ -21,7 +21,7 @@ RUN unzip /usr/src/rate-my-area/target/universal/rate-my-area-1.0-SNAPSHOT.zip
 # Copy config
 
 RUN cp -r /usr/src/rate-my-area/conf/ /usr/src/rate-my-area/rate-my-area-1.0-SNAPSHOT/
-RUN cp docker-conf/nginx/nginx.conf /etc/nginx/nginx.conf
+RUN cp docker-conf/nginx.conf /etc/nginx/nginx.conf
 RUN cp docker-conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Run command
