@@ -1,5 +1,9 @@
 FROM stuartxyz/scala-web-app
 
+# Install extra pre-requisites
+
+RUN apt-get install -y supervisor
+
 # Add source
 
 ADD . /usr/src/rate-my-area
