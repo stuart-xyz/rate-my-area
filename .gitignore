@@ -6,3 +6,5 @@ target/
 /public/compiled/
 *.DS_Store
 /conf/production.conf
+/.ivy2/
+/.sbt/

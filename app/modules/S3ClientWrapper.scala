@@ -9,12 +9,16 @@ import play.api.Configuration
 
 class S3ClientWrapper(appConfig: Configuration, mode: play.api.Mode) {
 
+  private val cloudfrontUrl =
+    if (mode == play.api.Mode.Test) ""
+    else appConfig.get[String]("cloudfront-url")
+
   private val client: Option[AmazonS3] =
     if (mode == play.api.Mode.Test) None
     else {
-      val regionName = appConfig.getOptional[String]("s3-region").getOrElse(throw new RuntimeException("s3-region configuration value is required"))
-      val accessKey = appConfig.getOptional[String]("s3-access-key").getOrElse(throw new RuntimeException("s3-access-key configuration value is required"))
-      val secretKey = appConfig.getOptional[String]("s3-secret-key").getOrElse(throw new RuntimeException("s3-secret-key configuration value is required"))
+      val regionName = appConfig.get[String]("s3-region")
+      val accessKey = appConfig.get[String]("s3-access-key")
+      val secretKey = appConfig.get[String]("s3-secret-key")
       val credentials = new BasicAWSCredentials(accessKey, secretKey)
       Some(AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(credentials)).withRegion(regionName).build())
     }
@@ -28,9 +32,6 @@ class S3ClientWrapper(appConfig: Configuration, mode: play.api.Mode) {
     else new PutObjectResult()
   }
 
-  def getUrl(bucketName: String, key: String): URL = {
-    if (client.nonEmpty) client.get.getUrl(bucketName, key)
-    else new URL("")
-  }
+  def getUrl(bucketName: String, key: String): URL = new URL(s"$cloudfrontUrl/$key")
 
 }
