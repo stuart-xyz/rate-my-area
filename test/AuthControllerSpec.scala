@@ -3,9 +3,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.api.test._
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
-class AuthControllerSpec extends PlaySpec with AuthenticatedUser with BaseOneAppPerTest with AppApplicationFactory {
+class AuthControllerSpec extends PlaySpec with AuthenticatedUser with TestHelpers with BaseOneAppPerTest with AppApplicationFactory {
 
   "POST /signup" should {
 
@@ -34,27 +32,8 @@ class AuthControllerSpec extends PlaySpec with AuthenticatedUser with BaseOneApp
   }
 
   "GET /user" should {
-
-    "return HTTP 401 unauthorised without authorisation cookie" in {
-      val request = FakeRequest(GET, "/user")
-      val result = route(app, request).get
-      status(result) mustBe UNAUTHORIZED
-      contentType(result) mustBe Some("application/json")
-      (contentAsJson(result) \ "error").isDefined mustBe true
-    }
-
-    "return HTTP 200 ok with authorisation cookie" in {
-      for {
-        authCookie <- getAuthCookie
-      } yield {
-        val request = FakeRequest(GET, "/user").withCookies(authCookie)
-        val result = route(app, request).get
-        status(result) mustBe OK
-        contentType(result) mustBe Some("application/json")
-        (contentAsJson(result) \ "message").isDefined mustBe true
-      }
-    }
-
+    "return HTTP 401 unauthorised without authorisation cookie" in simpleRequestCheck("user", authenticated = false, jsonBody = None, GET, UNAUTHORIZED, "error")
+    "return HTTP 200 ok with authorisation cookie" in simpleRequestCheck("user", authenticated = true, jsonBody = None, GET, OK, "message")
   }
 
 }
