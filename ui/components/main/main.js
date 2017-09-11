@@ -40,8 +40,7 @@ class Main extends React.Component {
 
   render() {
     return (
-      <div>
-        <h1>Welcome!</h1>
+      <div className="main-container">
         <AddReviewForm onSubmit={this.handleReviewSubmit} userId={this.props.userId}/>
         <ReviewList reviews={this.state.reviews}/>
       </div>

@@ -7,9 +7,23 @@
 }
 
 .preview-image {
-  width: 200px;
+  height: 175px;
 }
 
 .dropzone-text {
   padding: 10px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  padding-right: 20px;
+}
+
+.preview-image-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  padding-bottom: 10px;
 }

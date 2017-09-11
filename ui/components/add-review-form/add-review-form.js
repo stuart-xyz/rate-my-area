@@ -103,10 +103,10 @@ class AddReviewForm extends React.Component {
     let dropzoneRef;
     let imageKey = 0;
     return (
-      <div className="row">
-        <div className="one-half column">
+      <div>
+        <div className="form">
           <form>
-            <div className="row form-input">
+            <div className="form-input">
               <input
                 type="text"
                 placeholder="Title"
@@ -116,7 +116,7 @@ class AddReviewForm extends React.Component {
                 }}
               />
             </div>
-            <div className="row form-input">
+            <div className="form-input">
               <input
                 type="text"
                 placeholder="Area name"
@@ -126,7 +126,7 @@ class AddReviewForm extends React.Component {
                 }}
               />
             </div>
-            <div className="row form-input">
+            <div className="form-input">
               <input
                 type="text"
                 placeholder="Description"
@@ -136,7 +136,7 @@ class AddReviewForm extends React.Component {
                 }}
               />
             </div>
-            <div className="row form-input">
+            <div className="form-input">
               <Dropzone
                 ref={function (node) {
                   dropzoneRef = node;
@@ -156,7 +156,14 @@ class AddReviewForm extends React.Component {
                 Pick photos
               </button>
             </div>
-            <div className="row">
+            <div className="preview-image-container">
+              {this.state.files.map(file => {
+                const image = <img key={imageKey} src={file.preview} className="preview-image"/>;
+                imageKey += 1;
+                return image;
+              })}
+            </div>
+            <div>
               <input
                 type="submit"
                 value="Post"
@@ -168,15 +175,6 @@ class AddReviewForm extends React.Component {
               />
             </div>
           </form>
-        </div>
-        <div className="one-half column">
-          <div className="row">
-            {this.state.files.map(file => {
-              const image = <img key={imageKey} src={file.preview} className="preview-image"/>;
-              imageKey += 1;
-              return image;
-            })}
-          </div>
         </div>
       </div>
     );
