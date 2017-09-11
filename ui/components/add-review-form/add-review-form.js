@@ -148,7 +148,7 @@ class AddReviewForm extends React.Component {
               </Dropzone>
               <button
                 type="button"
-                className="file-upload-button"
+                className="button file-upload-button"
                 onClick={function () {
                   dropzoneRef.open();
                 }}
