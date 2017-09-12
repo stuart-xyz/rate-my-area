@@ -121,7 +121,6 @@ class AddReviewForm extends React.Component {
 
   render() {
     const self = this;
-    let dropzoneRef;
     let imageKey = 0;
     return (
       <div>
@@ -129,6 +128,7 @@ class AddReviewForm extends React.Component {
           <form>
             <div className="form-input">
               <input
+                className="form-input-title"
                 type="text"
                 placeholder="Title"
                 value={this.state.title}
@@ -139,6 +139,7 @@ class AddReviewForm extends React.Component {
             </div>
             <div className="form-input">
               <input
+                className="form-input-area-name"
                 type="text"
                 placeholder="Area name"
                 value={this.state.areaName}
@@ -148,7 +149,8 @@ class AddReviewForm extends React.Component {
               />
             </div>
             <div className="form-input">
-              <input
+              <textarea
+                className="form-input-description"
                 type="text"
                 placeholder="Description"
                 value={this.state.description}
@@ -159,23 +161,11 @@ class AddReviewForm extends React.Component {
             </div>
             <div className="form-input">
               <Dropzone
-                ref={function (node) {
-                  dropzoneRef = node;
-                }}
                 accept="image/jpeg, image/png"
                 onDrop={this.handleDrop}
               >
-                <p className="dropzone-text">Drop photos here to upload or pick photos</p>
+                <p className="dropzone-text"><a href="">Click or drop photos here to upload</a></p>
               </Dropzone>
-              <button
-                type="button"
-                className="button file-upload-button"
-                onClick={function () {
-                  dropzoneRef.open();
-                }}
-              >
-                Pick photos
-              </button>
             </div>
             <div className="preview-image-container">
               {this.state.files.map(file => {
