@@ -65,23 +65,24 @@ class AddReviewForm extends React.Component {
 
   handleClick() {
     this.setState({formSubmitPending: true});
-    const imagePromise = new Promise((resolve, reject) => {
-      fetch(this.state.files[0].preview, {
-        method: 'GET'
-      })
-      .then(response => {
-        if (response.ok) {
-          resolve(response.blob());
-        } else {
-          this.setState({formSubmitPending: false});
-          reject(new Error('Error retrieving image'));
-        }
+    const imagesPromise = Promise.all(this.state.files.map(file => {
+      return new Promise((resolve, reject) => {
+        fetch(file.preview, {
+          method: 'GET'
+        })
+        .then(response => {
+          if (response.ok) {
+            resolve(response.blob());
+          } else {
+            reject(new Error('Error retrieving image'));
+          }
+        });
       });
-    });
+    }));
 
-    imagePromise.then(blob => {
+    imagesPromise.then(imageBlobs => {
       const formData = new FormData();
-      formData.append('photo', blob);
+      imageBlobs.forEach(blob => formData.append('photo', blob));
       fetch('/upload', {
         method: 'POST',
         body: formData,
