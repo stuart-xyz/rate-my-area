@@ -15,6 +15,8 @@
 
 .review-list {
   padding-bottom: 50px;
+  display: flex;
+  flex-direction: column;
 }
 
 .username {

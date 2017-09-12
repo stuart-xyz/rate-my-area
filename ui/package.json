@@ -17,6 +17,7 @@
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-dropzone": "^4.1.0",
+    "url-loader": "^0.5.9",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {

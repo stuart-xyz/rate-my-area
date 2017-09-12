@@ -8,7 +8,7 @@ class ReviewList extends React.Component {
       <div className="review-list">
         {this.props.reviews.map(review => {
           return (
-            <div key={review.id} className="row review">
+            <div key={review.id} className="review">
               <div className="review-title">{review.title}<span className="username">-{review.username}</span></div>
               <div className="review-areaName">{review.areaName}</div>
               <div className="review-description">{review.description}</div>

@@ -10,6 +10,13 @@
   height: 175px;
 }
 
+.preview-cross {
+  width: 30px;
+  padding: 5px;
+  position: absolute;
+  cursor: pointer;
+}
+
 .dropzone-text {
   padding: 10px;
 }

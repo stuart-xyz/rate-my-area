@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Dropzone from 'react-dropzone';
+import crossIcon from './img/cross.svg';
 import './add-review-form.css';
 
 class AddReviewForm extends React.Component {
@@ -10,11 +11,14 @@ class AddReviewForm extends React.Component {
       title: '',
       areaName: '',
       description: '',
-      files: []
+      files: [],
+      formSubmitPending: false
     };
 
     this.handleClick = this.handleClick.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
+    this.handleRemoveClick = this.handleRemoveClick.bind(this);
+    this.handleError = this.handleError.bind(this);
   }
 
   componentWillUnmount() {
@@ -22,6 +26,7 @@ class AddReviewForm extends React.Component {
   }
 
   handleError(error) {
+    this.setState({formSubmitPending: false});
     console.log(error);
   }
 
@@ -49,7 +54,9 @@ class AddReviewForm extends React.Component {
           files: []
         });
         this.state.files.forEach(file => window.URL.revokeObjectURL(file.preview));
+        this.setState({formSubmitPending: false});
       } else {
+        this.setState({formSubmitPending: false});
         throw new Error('Review failed to post');
       }
     })
@@ -57,6 +64,7 @@ class AddReviewForm extends React.Component {
   }
 
   handleClick() {
+    this.setState({formSubmitPending: true});
     const imagePromise = new Promise((resolve, reject) => {
       fetch(this.state.files[0].preview, {
         method: 'GET'
@@ -65,6 +73,7 @@ class AddReviewForm extends React.Component {
         if (response.ok) {
           resolve(response.blob());
         } else {
+          this.setState({formSubmitPending: false});
           reject(new Error('Error retrieving image'));
         }
       });
@@ -85,6 +94,7 @@ class AddReviewForm extends React.Component {
           .then(json => this.postForm(json.url))
           .catch(this.handleError);
         } else {
+          this.setState({formSubmitPending: false});
           throw new Error('Image upload failed');
         }
       })
@@ -96,6 +106,16 @@ class AddReviewForm extends React.Component {
   handleDrop(files) {
     const newFiles = this.state.files.concat(files);
     this.setState({files: newFiles});
+  }
+
+  handleRemoveClick(file) {
+    window.URL.revokeObjectURL(file.preview);
+    const index = this.state.files.indexOf(file);
+    if (index > -1) {
+      const files = this.state.files;
+      files.splice(index, 1);
+      this.setState({files});
+    }
   }
 
   render() {
@@ -158,21 +178,38 @@ class AddReviewForm extends React.Component {
             </div>
             <div className="preview-image-container">
               {this.state.files.map(file => {
-                const image = <img key={imageKey} src={file.preview} className="preview-image"/>;
+                const image = (
+                  <div key={imageKey} className="preview">
+                    <img
+                      src={crossIcon}
+                      className="preview-cross"
+                      onClick={function () {
+                        self.handleRemoveClick(file);
+                      }}
+                    />
+                    <img
+                      className="preview-image"
+                      src={file.preview}
+                    />
+                  </div>
+                );
                 imageKey += 1;
                 return image;
               })}
             </div>
             <div>
-              <input
-                type="submit"
-                value="Post"
-                className="button-primary"
-                onClick={function (event) {
-                  event.preventDefault();
-                  self.handleClick();
-                }}
-              />
+              {
+                this.state.formSubmitPending ? <p>posting...</p> :
+                <input
+                  type="submit"
+                  value="Post"
+                  className="button-primary"
+                  onClick={function (event) {
+                    event.preventDefault();
+                    self.handleClick();
+                  }}
+                />
+              }
             </div>
           </form>
         </div>
