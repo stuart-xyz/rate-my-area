@@ -12,13 +12,16 @@ class AddReviewForm extends React.Component {
       areaName: '',
       description: '',
       files: [],
-      formSubmitPending: false
+      formSubmitPending: false,
+      dropRejected: false,
+      uploadTooLarge: false
     };
 
     this.handleClick = this.handleClick.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
     this.handleRemoveClick = this.handleRemoveClick.bind(this);
     this.handleError = this.handleError.bind(this);
+    this.handleDropRejected = this.handleDropRejected.bind(this);
   }
 
   componentWillUnmount() {
@@ -51,7 +54,9 @@ class AddReviewForm extends React.Component {
           title: '',
           areaName: '',
           description: '',
-          files: []
+          files: [],
+          dropRejected: false,
+          uploadTooLarge: false
         });
         this.state.files.forEach(file => window.URL.revokeObjectURL(file.preview));
         this.setState({formSubmitPending: false});
@@ -94,6 +99,8 @@ class AddReviewForm extends React.Component {
           jsonPromise
           .then(json => this.postForm(json.urls))
           .catch(this.handleError);
+        } else if (response.status === 413) {
+          this.setState({formSubmitPending: false, uploadTooLarge: true});
         } else {
           this.setState({formSubmitPending: false});
           throw new Error('Image upload failed');
@@ -106,7 +113,11 @@ class AddReviewForm extends React.Component {
 
   handleDrop(files) {
     const newFiles = this.state.files.concat(files);
-    this.setState({files: newFiles});
+    this.setState({files: newFiles, dropRejected: false});
+  }
+
+  handleDropRejected() {
+    this.setState({dropRejected: true});
   }
 
   handleRemoveClick(file) {
@@ -162,11 +173,17 @@ class AddReviewForm extends React.Component {
             <div className="form-input">
               <Dropzone
                 accept="image/jpeg, image/png"
+                maxSize={8 * 1024 * 1024}
                 onDrop={this.handleDrop}
+                onDropRejected={this.handleDropRejected}
               >
-                <p className="dropzone-text"><a href="">Click or drop photos here to upload</a></p>
+                <p className="dropzone-text">Click or drop photos here to upload</p>
               </Dropzone>
             </div>
+
+            {this.state.dropRejected ?
+              <p className="image-error">Files must be jpeg or png format, maximum size 8MB</p> : null}
+
             <div className="preview-image-container">
               {this.state.files.map(file => {
                 const image = (
@@ -188,6 +205,10 @@ class AddReviewForm extends React.Component {
                 return image;
               })}
             </div>
+
+            {this.state.uploadTooLarge ?
+              <p className="image-error">Maximum total size of pictures is 20MB per review</p> : null}
+
             <div>
               {
                 this.state.formSubmitPending ? <p>posting...</p> :

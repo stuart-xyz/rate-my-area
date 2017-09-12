@@ -9,6 +9,7 @@
 .form-input .form-input-description {
   width: 340px;
   height: 300px;
+  min-height: 300px;
   resize: vertical;
 }
 
@@ -25,6 +26,9 @@
 
 .dropzone-text {
   padding: 10px;
+  text-decoration: underline;
+  color: #1EAEDB;
+  cursor: pointer;
 }
 
 .form {
@@ -39,4 +43,10 @@
   flex-wrap: wrap;
   align-content: flex-start;
   padding-bottom: 10px;
+}
+
+.image-error {
+  color: #B80000;
+  font-weight: bold;
+  padding-top: 5px;
 }
