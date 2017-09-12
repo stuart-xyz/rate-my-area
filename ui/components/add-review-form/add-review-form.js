@@ -30,14 +30,14 @@ class AddReviewForm extends React.Component {
     console.log(error);
   }
 
-  postForm(imageUrl) {
+  postForm(imageUrls) {
     fetch('/reviews', {
       method: 'POST',
       body: JSON.stringify({
         title: this.state.title,
         areaName: this.state.areaName,
         description: this.state.description,
-        imageUrls: [imageUrl]
+        imageUrls
       }),
       credentials: 'include',
       headers: {
@@ -92,7 +92,7 @@ class AddReviewForm extends React.Component {
         if (response.ok) {
           const jsonPromise = response.json();
           jsonPromise
-          .then(json => this.postForm(json.url))
+          .then(json => this.postForm(json.urls))
           .catch(this.handleError);
         } else {
           this.setState({formSubmitPending: false});

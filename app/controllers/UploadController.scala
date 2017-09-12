@@ -13,11 +13,11 @@ class UploadController(cc: ControllerComponents, userAuthAction: UserAuthAction,
   extends AbstractController(cc) {
 
   def upload: Action[MultipartFormData[Files.TemporaryFile]] = userAuthAction(parse.multipartFormData) { implicit request =>
-    request.body.file("photo").map { photo =>
+    val urls = request.body.files.map(file => {
       val filename = UUID.randomUUID()
-      val url = uploadService.upload(photo.ref.toFile, filename.toString, request.user.id)
-      Ok(Json.obj("message" -> "File uploaded", "url" -> url))
-    }.getOrElse(BadRequest(Json.obj("error" -> "Missing file")))
+      uploadService.upload(file.ref.toFile, filename.toString, request.user.id)
+    })
+    Ok(Json.obj("message" -> "Files uploaded", "urls" -> urls))
   }
 
 }
