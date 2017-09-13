@@ -1,8 +1,10 @@
 .review {
   padding: 10px;
-  border: 1px;
-  border-color: black;
+  border: 2px;
+  border-radius: 5px;
+  border-color: darkgrey;
   border-style: solid;
+  margin-bottom: 10px;
 }
 
 .review-title {
@@ -24,4 +26,16 @@
   font-style: italic;
   padding-left: 15px;
   font-size: 20px;
+}
+
+.refresh-icon {
+  width: 30px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #33C3F0;
+  cursor: pointer;
+}
+
+.refresh-icon:hover {
+  background-color: #1EAEDB;
 }

@@ -12,12 +12,17 @@ class Main extends React.Component {
     };
 
     this.handleReviewSubmit = this.handleReviewSubmit.bind(this);
+    this.handleRefreshClick = this.handleRefreshClick.bind(this);
     this.getReviews = this.getReviews.bind(this);
 
     this.getReviews();
   }
 
   handleReviewSubmit() {
+    this.getReviews();
+  }
+
+  handleRefreshClick() {
     this.getReviews();
   }
 
@@ -42,7 +47,7 @@ class Main extends React.Component {
     return (
       <div className="main-container">
         <AddReviewForm onSubmit={this.handleReviewSubmit} userId={this.props.userId}/>
-        <ReviewList reviews={this.state.reviews}/>
+        <ReviewList reviews={this.state.reviews} onRefreshClick={this.handleRefreshClick}/>
       </div>
     );
   }
