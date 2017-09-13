@@ -15,10 +15,6 @@ class DatabaseService(dbConfig: DatabaseConfig[JdbcProfile])(implicit ec: Execut
   private val reviews = TableQuery[ReviewTable]
   private val imageUrls = TableQuery[ImageUrlTable]
 
-  def listUsers: Try[Future[Seq[User]]] = Try {
-    dbConfig.db.run(users.result)
-  }
-
   def addUser(email: String, username: String, hashedPassword: String, salt: String): Future[Try[Int]] = {
     val query = (users returning users.map(_.id)) += User(0, email, hashedPassword, salt, username)
     dbConfig.db.run(query.asTry)
@@ -28,7 +24,7 @@ class DatabaseService(dbConfig: DatabaseConfig[JdbcProfile])(implicit ec: Execut
     dbConfig.db.run(users.filter(_.email.toLowerCase === email.toLowerCase).result.headOption.asTry)
   }
 
-  def listReviews: Try[Future[Seq[DisplayedReview]]] = Try {
+  def listReviews: Future[Try[Seq[DisplayedReview]]] = {
     val joinQuery = for {
       ((review, user), imageUrl) <- reviews join users on (_.userId === _.id) joinLeft imageUrls on (_._1.id === _.reviewId)
     } yield (review, user, imageUrl)
@@ -45,11 +41,7 @@ class DatabaseService(dbConfig: DatabaseConfig[JdbcProfile])(implicit ec: Execut
           DisplayedReview(group.head._1, group.head._2.username, imageUrls)
       }.toSeq
     })
-    dbConfig.db.run(mergeQuery)
-  }
-
-  def getReviewOption(reviewId: Int): Future[Try[Option[Review]]] = {
-    dbConfig.db.run(reviews.filter(_.id === reviewId).result.headOption.asTry)
+    dbConfig.db.run(mergeQuery.asTry)
   }
 
   def addReview(user: User, reviewFormData: ReviewFormData): Try[Future[Seq[Int]]] = Try {

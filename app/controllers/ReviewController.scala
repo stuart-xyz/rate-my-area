@@ -4,12 +4,12 @@ import controllers.ReviewController.ReviewFormData
 import models.Review
 import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
-import services.{DatabaseService, UserAuthAction}
+import services.{DatabaseService, S3Service, UserAuthAction}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-class ReviewController(cc: ControllerComponents, databaseService: DatabaseService, userAuthAction: UserAuthAction)(implicit ec: ExecutionContext)
+class ReviewController(cc: ControllerComponents, databaseService: DatabaseService, userAuthAction: UserAuthAction, s3Service: S3Service)(implicit ec: ExecutionContext)
     extends AbstractController(cc) {
 
   def create = userAuthAction { implicit request =>
@@ -27,15 +27,20 @@ class ReviewController(cc: ControllerComponents, databaseService: DatabaseServic
   }
 
   def list: Action[AnyContent] = userAuthAction.async { implicit request =>
-    databaseService.listReviews match {
-      case Success(result) => result.map(reviews => Ok(Json.toJson(reviews)))
-      case Failure(_) => Future.successful(InternalServerError(Json.obj("error"-> "Unexpected internal error")))
+    for {
+      reviewsTry <- databaseService.listReviews
+    } yield reviewsTry match {
+      case Success(reviews) => Ok(Json.toJson(reviews))
+      case Failure(_) => InternalServerError(Json.obj("error"-> "Unexpected internal error"))
     }
   }
 
   def delete(id: Int): Action[AnyContent] = userAuthAction.async { implicit request =>
 
-    def deleteReview(review: Review) = {
+    case class ReviewNotFoundException() extends Exception
+    case class UnexpectedErrorException() extends Exception
+
+    def deleteReviewFromDatabase(review: Review) = {
       if (request.user.id == review.userId) {
         for {
           resultTry <- databaseService.deleteReview(id)
@@ -46,16 +51,28 @@ class ReviewController(cc: ControllerComponents, databaseService: DatabaseServic
       } else Future.successful(Unauthorized(Json.obj("error" -> "Not authorised to delete this review")))
     }
 
-    val nestedFutureResponse = for {
-      reviewOptionTry <- databaseService.getReviewOption(id)
-    } yield reviewOptionTry match {
-      case Success(reviewOption) => reviewOption match {
-        case Some(review) => deleteReview(review)
-        case None => Future.successful(BadRequest(Json.obj("error" -> "Review does not exist")))
-      }
-      case Failure(_) => Future.successful(InternalServerError(Json.obj("error" -> "Unexpected internal error")))
+    val futureReviewTry = for {
+      reviewsTry <- databaseService.listReviews
+    } yield reviewsTry match {
+      case Success(reviews) =>
+        val filteredReviews = reviews.filter(_.review.id == id)
+        if (filteredReviews.isEmpty) Failure(ReviewNotFoundException())
+        else {
+          val review = filteredReviews.head
+          review.imageUrls.foreach(imageUrl => s3Service.delete(imageUrl))
+          Success(review)
+        }
+      case Failure(_) => Failure(UnexpectedErrorException())
     }
-    nestedFutureResponse.flatMap(identity)
+
+    val nestedFutureResult = for {
+      reviewTry <- futureReviewTry
+    } yield reviewTry match {
+      case Success(displayedReview) => deleteReviewFromDatabase(displayedReview.review)
+      case Failure(_: ReviewNotFoundException) => Future.successful(BadRequest(Json.obj("error" -> "Review does not exist")))
+      case Failure(_: UnexpectedErrorException) => Future.successful(InternalServerError(Json.obj("error" -> "Unexpected internal error")))
+    }
+    nestedFutureResult.flatMap(identity)
   }
 
 }

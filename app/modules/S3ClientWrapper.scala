@@ -13,7 +13,7 @@ class S3ClientWrapper(appConfig: Configuration, mode: play.api.Mode) {
     if (mode == play.api.Mode.Test) ""
     else appConfig.get[String]("cloudfront-url")
 
-  private val client: Option[AmazonS3] =
+  private val clientOption: Option[AmazonS3] =
     if (mode == play.api.Mode.Test) None
     else {
       val regionName = appConfig.get[String]("s3-region")
@@ -28,9 +28,11 @@ class S3ClientWrapper(appConfig: Configuration, mode: play.api.Mode) {
     else appConfig.getOptional[String]("s3-bucket-name").getOrElse(throw new RuntimeException("s3-bucket-name configuration value is required"))
 
   def putObject(putObjectRequest: PutObjectRequest): PutObjectResult = {
-    if (client.nonEmpty) client.get.putObject(putObjectRequest)
+    if (clientOption.isDefined) clientOption.get.putObject(putObjectRequest)
     else new PutObjectResult()
   }
+
+  def deleteObject(bucketName: String, key: String): Unit = clientOption.foreach(_.deleteObject(bucketName, key))
 
   def getUrl(bucketName: String, key: String): URL = new URL(s"$cloudfrontUrl/$key")
 
