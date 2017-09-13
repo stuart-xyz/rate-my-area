@@ -9,6 +9,26 @@
 
 .review-title {
   font-size: 25px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.review-description {
+  padding-bottom: 10px;
+}
+
+.remove-button {
+  width: 30px;
+  height: 30px;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #e74c3c;
+}
+
+.remove-button:hover {
+  background-color: #C7382B;
 }
 
 .review-photos img {
@@ -34,6 +54,7 @@
   margin-bottom: 10px;
   background-color: #33C3F0;
   cursor: pointer;
+  border-radius: 5px;
 }
 
 .refresh-icon:hover {

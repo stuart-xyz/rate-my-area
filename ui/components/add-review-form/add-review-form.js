@@ -231,8 +231,7 @@ class AddReviewForm extends React.Component {
 }
 
 AddReviewForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  userId: PropTypes.number.isRequired
+  onSubmit: PropTypes.func.isRequired
 };
 
 export default AddReviewForm;

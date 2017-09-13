@@ -46,15 +46,19 @@ class Main extends React.Component {
   render() {
     return (
       <div className="main-container">
-        <AddReviewForm onSubmit={this.handleReviewSubmit} userId={this.props.userId}/>
-        <ReviewList reviews={this.state.reviews} onRefreshClick={this.handleRefreshClick}/>
+        <AddReviewForm onSubmit={this.handleReviewSubmit}/>
+        <ReviewList
+          reviews={this.state.reviews}
+          onRefreshClick={this.handleRefreshClick}
+          username={this.props.username}
+        />
       </div>
     );
   }
 }
 
 Main.propTypes = {
-  userId: PropTypes.number.isRequired
+  username: PropTypes.string.isRequired
 };
 
 export default Main;
