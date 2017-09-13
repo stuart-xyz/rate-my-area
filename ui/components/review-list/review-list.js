@@ -12,7 +12,18 @@ class ReviewList extends React.Component {
   }
 
   handleRemoveClick(reviewId) {
-
+    fetch('/reviews/' + reviewId, {
+      method: 'DELETE',
+      credentials: 'include'
+    })
+    .then(response => {
+      if (response.ok) {
+        this.props.onRefreshClick();
+      } else {
+        throw new Error('Review failed to delete');
+      }
+    })
+    .catch(err => console.log(err));
   }
 
   render() {
@@ -45,7 +56,7 @@ class ReviewList extends React.Component {
                 <div className="review-description">{review.description}</div>
                 <div className="review-photos">
                   {review.imageUrls.map(imageUrl => {
-                    return <img key={imageUrl} src={imageUrl}/>;
+                    return <img key={imageUrl} src={imageUrl} className="review-photo"/>;
                   })}
                 </div>
               </div>

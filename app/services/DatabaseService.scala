@@ -24,8 +24,8 @@ class DatabaseService(dbConfig: DatabaseConfig[JdbcProfile])(implicit ec: Execut
     dbConfig.db.run(query.asTry)
   }
 
-  def getUserOption(email: String): Try[Future[Option[User]]] = Try {
-    dbConfig.db.run(users.filter(_.email.toLowerCase === email.toLowerCase).result.headOption)
+  def getUserOption(email: String): Future[Try[Option[User]]] = {
+    dbConfig.db.run(users.filter(_.email.toLowerCase === email.toLowerCase).result.headOption.asTry)
   }
 
   def listReviews: Try[Future[Seq[DisplayedReview]]] = Try {
@@ -48,6 +48,10 @@ class DatabaseService(dbConfig: DatabaseConfig[JdbcProfile])(implicit ec: Execut
     dbConfig.db.run(mergeQuery)
   }
 
+  def getReviewOption(reviewId: Int): Future[Try[Option[Review]]] = {
+    dbConfig.db.run(reviews.filter(_.id === reviewId).result.headOption.asTry)
+  }
+
   def addReview(user: User, reviewFormData: ReviewFormData): Try[Future[Seq[Int]]] = Try {
     val reviewIdFuture = dbConfig.db.run {
       (reviews returning reviews.map(_.id)) += Review(0, reviewFormData.title, reviewFormData.areaName, reviewFormData.description, user.id)
@@ -60,6 +64,10 @@ class DatabaseService(dbConfig: DatabaseConfig[JdbcProfile])(implicit ec: Execut
       }
     }
     idsNestedFuture.flatMap(identity)
+  }
+
+  def deleteReview(reviewId: Int): Future[Try[Int]] = {
+    dbConfig.db.run(reviews.filter(_.id === reviewId).delete.asTry)
   }
 
 }

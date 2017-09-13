@@ -3,12 +3,14 @@
 # https://www.playframework.com/documentation/latest/ScalaRouting
 # ~~~~
 
-GET     /           controllers.IndexController.index
-GET     /user       controllers.AuthController.getUser
+GET     /               controllers.IndexController.index
+GET     /user           controllers.AuthController.getUser
 
-GET     /reviews    controllers.ReviewController.list
+GET     /reviews        controllers.ReviewController.list
 + nocsrf
-POST    /reviews    controllers.ReviewController.create
+POST    /reviews        controllers.ReviewController.create
++ nocsrf
+DELETE  /reviews/:id    controllers.ReviewController.delete(id: Int)
 
 + nocsrf
 POST    /login      controllers.AuthController.login

@@ -18,18 +18,16 @@ class AuthController(cc: ControllerComponents, databaseService: DatabaseService,
       case Some(json) => json.validate[UserLoginData].fold(
         errors => Future.successful(BadRequest(Json.obj("error" -> "Expected username and password"))),
         userLoginData => {
-          val resultAttempt = for {
-            cookieOptionFuture <- authService.login(userLoginData.email, userLoginData.password)
-          } yield for {
-            cookieOption <- cookieOptionFuture
-          } yield cookieOption match {
-            case Some(cookie) => Ok(Json.obj("message" -> "Log in successful")).withCookies(cookie)
-            case None => Unauthorized(Json.obj("error" -> "Invalid login credentials provided"))
-          }
-
-          resultAttempt match {
-            case Success(result) => result
-            case Failure(_) => Future.successful(InternalServerError(Json.obj("error" -> "Unexpected internal error occurred")))
+          for {
+            cookieOptionTry <- authService.login(userLoginData.email, userLoginData.password)
+          } yield {
+            cookieOptionTry match {
+              case Success(cookieOption) => cookieOption match {
+                case Some(cookie) => Ok(Json.obj("message" -> "Log in successful")).withCookies(cookie)
+                case None => Unauthorized(Json.obj("error" -> "Invalid login credentials provided"))
+              }
+              case Failure(_) => InternalServerError(Json.obj("error" -> "Unexpected internal error occurred"))
+            }
           }
         }
       )

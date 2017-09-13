@@ -18,6 +18,10 @@
   padding-bottom: 10px;
 }
 
+.review-photo {
+  padding-right: 5px;
+}
+
 .remove-button {
   width: 30px;
   height: 30px;
