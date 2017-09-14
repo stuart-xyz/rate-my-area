@@ -8,7 +8,8 @@ CREATE TABLE reviews (
     area_name varchar(255) NOT NULL,
     emoji_code varchar(255) NOT NULL,
     description varchar(255) NOT NULL,
-    user_id bigint references users(id)
+    user_id bigint,
+    constraint reviews_user_id_fkey foreign key (user_id) references users(id)
 );
 
 # --- !Downs
