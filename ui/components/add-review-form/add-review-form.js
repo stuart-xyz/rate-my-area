@@ -211,7 +211,7 @@ class AddReviewForm extends React.Component {
 
             <div>
               {
-                this.state.formSubmitPending ? <p>posting...</p> :
+                this.state.formSubmitPending ? <p>uploading & posting...</p> :
                 <input
                   type="submit"
                   value="Post"

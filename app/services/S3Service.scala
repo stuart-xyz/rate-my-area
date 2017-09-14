@@ -1,6 +1,7 @@
 package services
 
 import java.io.File
+import java.net.URL
 
 import com.amazonaws.services.s3.model.PutObjectRequest
 import modules.S3ClientWrapper
@@ -15,7 +16,7 @@ class S3Service(appConfig: Configuration, s3Client: S3ClientWrapper) {
   }
 
   def delete(url: String): Unit = {
-    s3Client.deleteObject(s3Client.configuredBucketName, url.split("/").last)
+    s3Client.deleteObject(s3Client.configuredBucketName, new URL(url).getFile.stripPrefix("/"))
   }
 
 }

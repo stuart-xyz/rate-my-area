@@ -30,13 +30,16 @@ class ReviewList extends React.Component {
     const self = this;
     return (
       <div>
-        <img
-          className="refresh-icon"
-          src={RefreshIcon}
-          onClick={function () {
-            self.props.onRefreshClick();
-          }}
-        />
+        {
+          this.props.reviews.length > 0 ?
+            <img
+              className="refresh-icon"
+              src={RefreshIcon}
+              onClick={function () {
+                self.props.onRefreshClick();
+              }}
+            /> : null
+        }
         <div className="review-list">
           {this.props.reviews.map(review => {
             return (
