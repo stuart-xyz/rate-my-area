@@ -10,6 +10,8 @@ GET     /reviews        controllers.ReviewController.list
 + nocsrf
 POST    /reviews        controllers.ReviewController.create
 + nocsrf
+PATCH   /reviews/:id    controllers.ReviewController.edit(id: Int)
++ nocsrf
 DELETE  /reviews/:id    controllers.ReviewController.delete(id: Int)
 
 + nocsrf

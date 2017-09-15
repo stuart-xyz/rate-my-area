@@ -7,7 +7,7 @@ import slick.jdbc.JdbcProfile
 import slick.jdbc.PostgresProfile.api._
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Success, Try}
+import scala.util.{Failure, Success, Try}
 
 class DatabaseService(dbConfig: DatabaseConfig[JdbcProfile])(implicit ec: ExecutionContext) {
 
@@ -44,18 +44,24 @@ class DatabaseService(dbConfig: DatabaseConfig[JdbcProfile])(implicit ec: Execut
     dbConfig.db.run(mergeQuery.asTry)
   }
 
-  def addReview(user: User, reviewFormData: ReviewFormData): Try[Future[Seq[Int]]] = Try {
-    val reviewIdFuture = dbConfig.db.run {
-      (reviews returning reviews.map(_.id)) += Review(0, reviewFormData.title, reviewFormData.areaName, reviewFormData.description, user.id)
+  def addReview(user: User, reviewFormData: ReviewFormData): Future[Try[Seq[Int]]] = {
+    val addReviewQuery = (reviews returning reviews.map(_.id)) += Review(0, reviewFormData.title, reviewFormData.areaName, reviewFormData.description, user.id)
+    val futureResult = for {
+      reviewIdTry <- dbConfig.db.run(addReviewQuery.asTry)
+    } yield reviewIdTry match {
+      case Success(reviewId) =>
+        val addImageUrlsQuery = (imageUrls returning imageUrls.map(_.id)) ++= reviewFormData.imageUrls.map(url => ImageUrl(0, url, reviewId))
+        dbConfig.db.run(addImageUrlsQuery.asTry)
+      case Failure(_) => Future.successful(Failure(new Exception("Database error")))
     }
-    val idsNestedFuture = for {
-      reviewId <- reviewIdFuture
-    } yield {
-      dbConfig.db.run {
-        (imageUrls returning imageUrls.map(_.id)) ++= reviewFormData.imageUrls.map(url => ImageUrl(0, url, reviewId))
-      }
-    }
-    idsNestedFuture.flatMap(identity)
+    futureResult.flatMap(identity)
+  }
+
+  def updateReview(updatedReview: Review): Future[Try[Int]] = {
+    val updateQuery = for {
+      review <- reviews
+    } yield (review.title, review.areaName, review.description)
+    dbConfig.db.run(updateQuery.update(updatedReview.title, updatedReview.areaName, updatedReview.description).asTry)
   }
 
   def deleteReview(reviewId: Int): Future[Try[Int]] = {
