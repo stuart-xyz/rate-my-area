@@ -59,7 +59,7 @@ class DatabaseService(dbConfig: DatabaseConfig[JdbcProfile])(implicit ec: Execut
 
   def updateReview(updatedReview: Review): Future[Try[Int]] = {
     val updateQuery = for {
-      review <- reviews
+      review <- reviews.filter(_.id === updatedReview.id)
     } yield (review.title, review.areaName, review.description)
     dbConfig.db.run(updateQuery.update(updatedReview.title, updatedReview.areaName, updatedReview.description).asTry)
   }

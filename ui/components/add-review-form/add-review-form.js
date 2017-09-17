@@ -173,7 +173,7 @@ class AddReviewForm extends React.Component {
             <div className="form-input">
               <Dropzone
                 accept="image/jpeg, image/png"
-                maxSize={8 * 1024 * 1024}
+                maxSize={2 * 1024 * 1024}
                 onDrop={this.handleDrop}
                 onDropRejected={this.handleDropRejected}
               >
@@ -182,7 +182,7 @@ class AddReviewForm extends React.Component {
             </div>
 
             {this.state.dropRejected ?
-              <p className="image-error">Files must be jpeg or png format, maximum size 8MB</p> : null}
+              <p className="image-error">Files must be jpeg or png format, maximum size 2MB</p> : null}
 
             <div className="preview-image-container">
               {this.state.files.map(file => {

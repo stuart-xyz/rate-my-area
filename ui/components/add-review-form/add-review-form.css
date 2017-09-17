@@ -13,6 +13,10 @@
   resize: vertical;
 }
 
+.preview {
+  padding-right: 5px;
+}
+
 .preview-image {
   height: 175px;
 }

@@ -1,3 +1,9 @@
+.review-list {
+  padding-bottom: 50px;
+  display: flex;
+  flex-direction: column;
+}
+
 .review {
   padding: 10px;
   border: 2px;
@@ -7,19 +13,86 @@
   margin-bottom: 10px;
 }
 
-.review-title {
+.review-title, .review-title-static {
   font-size: 25px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: flex-start;
+}
+
+.review-title-static span {
+  padding-left: 10px;
+}
+
+.review-title-primary {
+  display: flex;
+  flex-direction: row;
+  margin-right: 10px;
+  width: 100%;
+}
+
+.review-description-input {
+  width: 100%;
+  resize: vertical;
+}
+
+.review-description-display {
+  width: 100%;
+  padding: 5px;
+}
+
+.review-title-display:hover,
+.review-area-name-display:hover,
+.review-description-display:hover
+{
+  border: 1px solid #D1D1D1;
+  border-radius: 4px;
+}
+
+.review-title-input {
+  width: 100%;
+}
+
+.review-area-name-input {
+  width: 100%;
+}
+
+.review-title-display {
+  width: 100%;
+}
+
+.review-area-name {
+  padding-left: 20px;
+}
+
+.review-area-name-static, .review-description-static {
+  display: flex;
+  padding-left: 25px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+.review-area-name-display {
+  width: 100%;
+  padding: 5px;
+}
+
+.review-title-display {
+  width: 100%;
 }
 
 .review-description {
   padding-bottom: 10px;
+  padding-left: 20px;
 }
 
 .review-photo {
   padding-right: 5px;
+}
+
+.review-photos {
+  margin-left: 10px;
 }
 
 .remove-button {
@@ -37,12 +110,6 @@
 
 .review-photos img {
   max-width: 200px;
-}
-
-.review-list {
-  padding-bottom: 50px;
-  display: flex;
-  flex-direction: column;
 }
 
 .username {
@@ -63,4 +130,11 @@
 
 .refresh-icon:hover {
   background-color: #1EAEDB;
+}
+
+.pencil-icon {
+  width: 15px;
+  height: 15px;
+  padding-right: 5px;
+  padding-top: 12px;
 }
