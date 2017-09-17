@@ -50,6 +50,12 @@
   border-radius: 4px;
 }
 
+.review-area-name-display:hover,
+.review-description-display:hover
+{
+  margin-top: -2px;
+}
+
 .review-title-input {
   width: 100%;
 }
@@ -69,8 +75,6 @@
 .review-area-name-static, .review-description-static {
   display: flex;
   padding-left: 25px;
-  margin-top: 6px;
-  margin-bottom: 6px;
 }
 
 .review-area-name-display {
