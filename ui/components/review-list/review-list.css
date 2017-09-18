@@ -51,6 +51,13 @@
   border-radius: 4px;
 }
 
+.review-title-display .no-border,
+.review-area-name-display .no-border,
+.review-description-display .no-border
+{
+  border: none;
+}
+
 .review-area-name-display:hover,
 .review-description-display:hover
 {

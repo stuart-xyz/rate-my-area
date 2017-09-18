@@ -133,7 +133,7 @@ class ReviewList extends React.Component {
                           disabled={!reviewBelongsToUser}
                         /> :
                         <span
-                          className="review-title-display"
+                          className={'review-title-display' + reviewBelongsToUser ? ' no-border' : ''}
                           onClick={function () {
                             self.handleInputFocus('review-title-input', true, review.id);
                           }}
@@ -171,7 +171,7 @@ class ReviewList extends React.Component {
                         disabled={!reviewBelongsToUser}
                       /> :
                       <span
-                        className="review-area-name-display"
+                        className={'review-area-name-display' + reviewBelongsToUser ? ' no-border' : ''}
                         onClick={function () {
                           self.handleInputFocus('review-area-name-input', true, review.id);
                         }}
@@ -200,7 +200,7 @@ class ReviewList extends React.Component {
                         disabled={!reviewBelongsToUser}
                       /> :
                       <span
-                        className="review-description-display"
+                        className={'review-description-display' + reviewBelongsToUser ? ' no-border' : ''}
                         onClick={function () {
                           self.handleInputFocus('review-description-input', true, review.id);
                         }}
