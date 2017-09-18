@@ -15,7 +15,8 @@ class AddReviewForm extends React.Component {
       formSubmitPending: false,
       dropRejected: false,
       uploadTooLarge: false,
-      submitFailed: false
+      validationFailed: false,
+      unexpectedError: false
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -30,7 +31,7 @@ class AddReviewForm extends React.Component {
   }
 
   handleError(error) {
-    this.setState({formSubmitPending: false});
+    this.setState({formSubmitPending: false, unexpectedError: true});
     console.log(error);
   }
 
@@ -60,9 +61,8 @@ class AddReviewForm extends React.Component {
           uploadTooLarge: false
         });
         this.state.files.forEach(file => window.URL.revokeObjectURL(file.preview));
-        this.setState({formSubmitPending: false});
+        this.setState({formSubmitPending: false, unexpectedError: false});
       } else {
-        this.setState({formSubmitPending: false});
         throw new Error('Review failed to post');
       }
     })
@@ -71,11 +71,11 @@ class AddReviewForm extends React.Component {
 
   handleClick() {
     if ((this.state.title === '') || (this.state.areaName === '') || (this.state.description === '')) {
-      this.setState({submitFailed: true});
+      this.setState({validationFailed: true});
       return;
     }
 
-    this.setState({formSubmitPending: true, submitFailed: false});
+    this.setState({formSubmitPending: true, validationFailed: false});
     const imagesPromise = Promise.all(this.state.files.map(file => {
       return new Promise((resolve, reject) => {
         fetch(file.preview, {
@@ -108,7 +108,6 @@ class AddReviewForm extends React.Component {
         } else if (response.status === 413) {
           this.setState({formSubmitPending: false, uploadTooLarge: true});
         } else {
-          this.setState({formSubmitPending: false});
           throw new Error('Image upload failed');
         }
       })
@@ -177,11 +176,11 @@ class AddReviewForm extends React.Component {
               />
             </div>
 
-            {(this.state.title === '') && this.state.submitFailed ?
+            {(this.state.title === '') && this.state.validationFailed ?
               <p className="form-error">Title cannot be empty</p> : null}
-            {(this.state.areaName === '') && this.state.submitFailed ?
+            {(this.state.areaName === '') && this.state.validationFailed ?
               <p className="form-error">Area name cannot be empty</p> : null}
-            {(this.state.description === '') && this.state.submitFailed ?
+            {(this.state.description === '') && this.state.validationFailed ?
               <p className="form-error">Description cannot be empty</p> : null}
 
             <div className="form-input">
@@ -221,7 +220,7 @@ class AddReviewForm extends React.Component {
             </div>
 
             {this.state.uploadTooLarge ?
-              <p className="image-error">Maximum total size of pictures is 20MB per review</p> : null}
+              <p className="form-error">Maximum total size of pictures is 20MB per review</p> : null}
 
             <div>
               {
@@ -237,6 +236,9 @@ class AddReviewForm extends React.Component {
                 />
               }
             </div>
+
+            {this.state.unexpectedError ?
+              <p className="form-error">Review failed to post due to unexpected error</p> : null}
           </form>
         </div>
       </div>

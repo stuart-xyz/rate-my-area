@@ -13,12 +13,19 @@ class ReviewList extends React.Component {
       newTitle: undefined,
       newAreaName: undefined,
       newDescription: undefined,
-      focus: {}
+      focus: {},
+      unexpectedError: false
     };
 
     this.handleRemoveClick = this.handleRemoveClick.bind(this);
     this.handleInputFocus = this.handleInputFocus.bind(this);
     this.updateReview = this.updateReview.bind(this);
+    this.handleError = this.handleError.bind(this);
+  }
+
+  handleError(err) {
+    this.setState({unexpectedError: true});
+    console.log(err);
   }
 
   handleRemoveClick(reviewId) {
@@ -28,12 +35,13 @@ class ReviewList extends React.Component {
     })
     .then(response => {
       if (response.ok) {
+        this.setState({unexpectedError: false});
         this.props.onRefreshClick();
       } else {
         throw new Error('Review failed to delete');
       }
     })
-    .catch(err => console.log(err));
+    .catch(this.handleError);
   }
 
   updateReview(reviewId, newField) {
@@ -47,12 +55,13 @@ class ReviewList extends React.Component {
     })
     .then(response => {
       if (response.ok) {
+        this.setState({unexpectedError: false});
         this.props.onRefreshClick();
       } else {
         throw new Error('Review failed to update');
       }
     })
-    .catch(err => console.log(err));
+    .catch(this.handleError);
   }
 
   handleInputFocus(inputClassName, hasFocus, reviewId) {
@@ -102,6 +111,10 @@ class ReviewList extends React.Component {
               }}
             /> : null
         }
+
+        {this.state.unexpectedError ?
+          <p className="form-error">Action failed due to unexpected error</p> : null}
+
         <div className="review-list">
           {this.props.reviews.map(review => {
             const reviewBelongsToUser = this.props.username === review.username;
