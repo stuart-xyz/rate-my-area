@@ -47,9 +47,12 @@ class Main extends React.Component {
   render() {
     return (
       <div>
-        <Logout
-          onLogout={this.props.onLogout}
-        />
+        <div className="user-identity">
+          <span className="user-identity-username">Welcome {this.props.username}</span>
+          <Logout
+            onLogout={this.props.onLogout}
+          />
+        </div>
         <div className="main-container">
           <AddReviewForm
             onSubmit={this.handleReviewSubmit}
