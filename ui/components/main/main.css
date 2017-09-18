@@ -2,3 +2,17 @@
   display: flex;
   flex-direction: column;
 }
+
+.user-identity {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+}
+
+.user-identity-username {
+  padding-right: 20px;
+  color: grey;
+  font-style: italic;
+  font-size: 20px;
+}

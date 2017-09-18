@@ -15,7 +15,7 @@ class AddReviewForm extends React.Component {
       formSubmitPending: false,
       dropRejected: false,
       uploadTooLarge: false,
-      submitAttempted: false
+      submitFailed: false
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -71,11 +71,11 @@ class AddReviewForm extends React.Component {
 
   handleClick() {
     if ((this.state.title === '') || (this.state.areaName === '') || (this.state.description === '')) {
-      this.setState({submitAttempted: true});
+      this.setState({submitFailed: true});
       return;
     }
 
-    this.setState({formSubmitPending: true});
+    this.setState({formSubmitPending: true, submitFailed: false});
     const imagesPromise = Promise.all(this.state.files.map(file => {
       return new Promise((resolve, reject) => {
         fetch(file.preview, {
@@ -140,7 +140,7 @@ class AddReviewForm extends React.Component {
     const self = this;
     let imageKey = 0;
     return (
-      <div>
+      <div className="add-review-form-container">
         <div className="form">
           <form>
             <div className="form-input">
@@ -177,11 +177,11 @@ class AddReviewForm extends React.Component {
               />
             </div>
 
-            {(this.state.title === '') && this.state.submitAttempted ?
+            {(this.state.title === '') && this.state.submitFailed ?
               <p className="form-error">Title cannot be empty</p> : null}
-            {(this.state.areaName === '') && this.state.submitAttempted ?
+            {(this.state.areaName === '') && this.state.submitFailed ?
               <p className="form-error">Area name cannot be empty</p> : null}
-            {(this.state.description === '') && this.state.submitAttempted ?
+            {(this.state.description === '') && this.state.submitFailed ?
               <p className="form-error">Description cannot be empty</p> : null}
 
             <div className="form-input">

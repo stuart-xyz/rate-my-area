@@ -4,7 +4,8 @@ import controllers.AuthController.{UserLoginData, UserSignupData}
 import org.postgresql.util.PSQLException
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
+import play.api.mvc._
+import services.CustomExceptions.UserNotLoggedInException
 import services.{AuthService, DatabaseService, UserAuthAction}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -12,6 +13,8 @@ import scala.util.{Failure, Success}
 
 class AuthController(cc: ControllerComponents, databaseService: DatabaseService, authService: AuthService, userAuthAction: UserAuthAction)(implicit ec: ExecutionContext)
   extends AbstractController(cc) {
+
+  private val cookieHeader = "X-Auth-Token"
 
   def login: Action[AnyContent] = Action.async { implicit request =>
     request.body.asJson match {
@@ -49,6 +52,18 @@ class AuthController(cc: ControllerComponents, databaseService: DatabaseService,
           }
       )
       case None => Future.successful(BadRequest(Json.obj("error" -> "Expected JSON body")))
+    }
+  }
+
+  def logout = userAuthAction { implicit request =>
+    authService.logout(request) match {
+      case None => Unauthorized(Json.obj("error" -> "Unauthorised"))
+      case Some(removeCookieAttempt) =>
+        removeCookieAttempt match {
+          case Success(_) => Ok(Json.obj("message" -> "Successfully logged out")).discardingCookies(DiscardingCookie(cookieHeader))
+          case Failure(_: UserNotLoggedInException) => BadRequest(Json.obj("error" -> "The specified authentication token is not active"))
+          case Failure(_) => InternalServerError(Json.obj("error" -> "Unexpected internal error"))
+        }
     }
   }
 

@@ -21,6 +21,7 @@ class Index extends React.Component {
     this.handleSignupClick = this.handleSignupClick.bind(this);
     this.handleSignup = this.handleSignup.bind(this);
     this.handleLoginClick = this.handleLoginClick.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
   }
 
   componentWillMount() {
@@ -37,6 +38,15 @@ class Index extends React.Component {
 
   handleLoginClick(email) {
     this.setState({showSignupForm: false, email});
+  }
+
+  handleLogout() {
+    this.setState({
+      authenticated: false,
+      username: '',
+      email: '',
+      showSignupForm: false
+    });
   }
 
   handleSignup(email) {
@@ -67,7 +77,12 @@ class Index extends React.Component {
     if (this.state.authenticated === undefined) {
       view = null;
     } else if (this.state.authenticated) {
-      view = <Main username={this.state.username}/>;
+      view = (
+        <Main
+          username={this.state.username}
+          onLogout={this.handleLogout}
+        />
+      );
     } else if (this.state.showSignupForm) {
       view = (
         <Signup

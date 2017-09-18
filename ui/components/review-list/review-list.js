@@ -112,7 +112,7 @@ class ReviewList extends React.Component {
                   <div className="review-title-primary">
                     {pencilIcon}
                     {
-                      this.state.focus[review.id] && this.state.focus[review.id]['review-title-input'] ?
+                      this.state.focus[review.id] && this.state.focus[review.id]['review-title-input'] && reviewBelongsToUser ?
                         <input
                           className="review-title-input"
                           onClick={function () {
@@ -133,9 +133,11 @@ class ReviewList extends React.Component {
                           disabled={!reviewBelongsToUser}
                         /> :
                         <span
-                          className="review-title-display"
+                          className={'review-title-display' + (reviewBelongsToUser ? '' : ' no-border')}
                           onClick={function () {
-                            self.handleInputFocus('review-title-input', true, review.id);
+                            if (reviewBelongsToUser) {
+                              self.handleInputFocus('review-title-input', true, review.id);
+                            }
                           }}
                         >
                           {review.title}
@@ -151,9 +153,12 @@ class ReviewList extends React.Component {
                       }}
                     /> : null}
                 </div>
+                <div className="username-display">
+                  <span> - {review.username}</span>
+                </div>
                 <div className={this.state.focus[review.id] && this.state.focus[review.id]['review-area-name-input'] ? 'review-area-name' : 'review-area-name-static'}>
                   {
-                    this.state.focus[review.id] && this.state.focus[review.id]['review-area-name-input'] ?
+                    this.state.focus[review.id] && this.state.focus[review.id]['review-area-name-input'] && reviewBelongsToUser ?
                       <input
                         className="review-area-name-input"
                         onFocus={function () {
@@ -171,9 +176,11 @@ class ReviewList extends React.Component {
                         disabled={!reviewBelongsToUser}
                       /> :
                       <span
-                        className="review-area-name-display"
+                        className={'review-area-name-display' + (reviewBelongsToUser ? '' : ' no-border')}
                         onClick={function () {
-                          self.handleInputFocus('review-area-name-input', true, review.id);
+                          if (reviewBelongsToUser) {
+                            self.handleInputFocus('review-area-name-input', true, review.id);
+                          }
                         }}
                       >
                         {review.areaName}
@@ -182,7 +189,7 @@ class ReviewList extends React.Component {
                 </div>
                 <div className={this.state.focus[review.id] && this.state.focus[review.id]['review-description-input'] ? 'review-description' : 'review-description-static'}>
                   {
-                    this.state.focus[review.id] && this.state.focus[review.id]['review-description-input'] ?
+                    this.state.focus[review.id] && this.state.focus[review.id]['review-description-input'] && reviewBelongsToUser ?
                       <textarea
                         className="review-description-input"
                         onFocus={function () {
@@ -200,9 +207,11 @@ class ReviewList extends React.Component {
                         disabled={!reviewBelongsToUser}
                       /> :
                       <span
-                        className="review-description-display"
+                        className={'review-description-display' + (reviewBelongsToUser ? '' : ' no-border')}
                         onClick={function () {
-                          self.handleInputFocus('review-description-input', true, review.id);
+                          if (reviewBelongsToUser) {
+                            self.handleInputFocus('review-description-input', true, review.id);
+                          }
                         }}
                       >
                         {review.description}

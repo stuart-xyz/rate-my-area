@@ -6,20 +6,33 @@ class Logout extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleClick = this.handleClick.bind(this);
+    this.handleLogoutClick = this.handleLogoutClick.bind(this);
   }
 
-  handleLogoutError(error) {
-    console.log(error);
-  }
-
-  handleClick() {
-
+  handleLogoutClick(event) {
+    event.preventDefault();
+    fetch('/logout', {
+      method: 'GET',
+      credentials: 'include'
+    })
+    .then(response => {
+      if (response.ok) {
+        this.props.onLogout();
+      } else {
+        throw new Error('Failed to logout');
+      }
+    })
+    .catch(err => console.log(err));
   }
 
   render() {
     return (
-      <div/>
+      <input
+        type="submit"
+        value="Logout"
+        className="logout-button button-primary"
+        onClick={this.handleLogoutClick}
+      />
     );
   }
 }

@@ -68,7 +68,7 @@ class Login extends React.Component {
       <form className="login-form">
         <div className="form-input row">
           <input
-            type="text"
+            type="email"
             placeholder="Email address"
             value={this.state.email}
             onChange={function (event) {
