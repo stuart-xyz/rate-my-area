@@ -8,6 +8,7 @@ import models.User
 import org.mindrot.jbcrypt.BCrypt
 import play.api.cache.SyncCacheApi
 import play.api.mvc.{Cookie, RequestHeader}
+import services.CustomExceptions.UserNotLoggedInException
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,6 +37,13 @@ class AuthService(cacheApi: SyncCacheApi, databaseService: DatabaseService)(impl
   def signup(email: String, username: String, password: String): Future[Try[Int]] = {
     val hashedPasswordWithSalt = hashPasswordWithSalt(password)
     databaseService.addUser(email, username, hashedPasswordWithSalt.hashedPassword, hashedPasswordWithSalt.salt)
+  }
+
+  def logout(header: RequestHeader): Option[Try[Unit]] = {
+    header.cookies.get(cookieHeader).map(cookie => {
+      if (cacheApi.get[User](cookie.value).isDefined) Success(cacheApi.remove(cookie.value))
+      else Failure(new UserNotLoggedInException)
+    })
   }
 
   def hashPasswordWithSalt(password: String): HashedPasswordWithSalt = {

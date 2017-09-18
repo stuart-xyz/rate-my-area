@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AddReviewForm from '../add-review-form/add-review-form';
 import ReviewList from '../review-list/review-list';
+import Logout from '../logout/logout';
 import './main.css';
 
 class Main extends React.Component {
@@ -45,20 +46,28 @@ class Main extends React.Component {
 
   render() {
     return (
-      <div className="main-container">
-        <AddReviewForm onSubmit={this.handleReviewSubmit}/>
-        <ReviewList
-          reviews={this.state.reviews}
-          onRefreshClick={this.handleRefreshClick}
-          username={this.props.username}
+      <div>
+        <Logout
+          onLogout={this.props.onLogout}
         />
+        <div className="main-container">
+          <AddReviewForm
+            onSubmit={this.handleReviewSubmit}
+          />
+          <ReviewList
+            reviews={this.state.reviews}
+            onRefreshClick={this.handleRefreshClick}
+            username={this.props.username}
+          />
+        </div>
       </div>
     );
   }
 }
 
 Main.propTypes = {
-  username: PropTypes.string.isRequired
+  username: PropTypes.string.isRequired,
+  onLogout: PropTypes.func.isRequired
 };
 
 export default Main;

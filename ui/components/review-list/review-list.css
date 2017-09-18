@@ -40,6 +40,7 @@
 .review-description-display {
   width: 100%;
   padding: 5px;
+  padding-left: 10px;
 }
 
 .review-title-display:hover,
@@ -74,12 +75,13 @@
 
 .review-area-name-static, .review-description-static {
   display: flex;
-  padding-left: 25px;
+  padding-left: 20px;
 }
 
 .review-area-name-display {
   width: 100%;
   padding: 5px;
+  padding-left: 10px;
 }
 
 .review-title-display {
@@ -89,6 +91,10 @@
 .review-description {
   padding-bottom: 20px;
   padding-left: 20px;
+}
+
+.review-description-static {
+  padding-bottom: 20px;
 }
 
 .review-photo {
