@@ -3,7 +3,7 @@ organization := "io.stuartp"
 
 version := "1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+lazy val root = (project in file(".")).enablePlugins(PlayScala, SbtWeb)
 
 scalaVersion := "2.12.2"
 
@@ -23,5 +23,8 @@ libraryDependencies ++= Seq(
   "com.h2database" % "h2" % "1.4.196" % Test,
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.0" % Test
 )
+
+pipelineStages := Seq(digest, gzip)
+pipelineStages in Assets := Seq(digest, gzip)
 
 javaOptions in Test ++= Seq("-Dconfig.file=conf/application.test.conf")

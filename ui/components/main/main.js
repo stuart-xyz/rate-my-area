@@ -12,12 +12,17 @@ class Main extends React.Component {
     };
 
     this.handleReviewSubmit = this.handleReviewSubmit.bind(this);
+    this.handleRefreshClick = this.handleRefreshClick.bind(this);
     this.getReviews = this.getReviews.bind(this);
 
     this.getReviews();
   }
 
   handleReviewSubmit() {
+    this.getReviews();
+  }
+
+  handleRefreshClick() {
     this.getReviews();
   }
 
@@ -40,17 +45,20 @@ class Main extends React.Component {
 
   render() {
     return (
-      <div>
-        <h1>Welcome!</h1>
-        <AddReviewForm onSubmit={this.handleReviewSubmit} userId={this.props.userId}/>
-        <ReviewList reviews={this.state.reviews}/>
+      <div className="main-container">
+        <AddReviewForm onSubmit={this.handleReviewSubmit}/>
+        <ReviewList
+          reviews={this.state.reviews}
+          onRefreshClick={this.handleRefreshClick}
+          username={this.props.username}
+        />
       </div>
     );
   }
 }
 
 Main.propTypes = {
-  userId: PropTypes.number.isRequired
+  username: PropTypes.string.isRequired
 };
 
 export default Main;

@@ -1,20 +1,119 @@
-.review {
-  padding: 10px;
-  border: 1px;
-  border-color: black;
-  border-style: solid;
+.review-list {
+  padding-bottom: 50px;
+  display: flex;
+  flex-direction: column;
 }
 
-.review-title {
+.review {
+  padding: 10px;
+  border: 2px;
+  border-radius: 5px;
+  border-color: darkgrey;
+  border-style: solid;
+  margin-bottom: 10px;
+}
+
+.review-title, .review-title-static {
   font-size: 25px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.review-title-static span {
+  padding-left: 10px;
+}
+
+.review-title-primary {
+  display: flex;
+  flex-direction: row;
+  margin-right: 10px;
+  width: 100%;
+}
+
+.review-description-input {
+  width: 100%;
+  resize: vertical;
+}
+
+.review-description-display {
+  width: 100%;
+  padding: 5px;
+}
+
+.review-title-display:hover,
+.review-area-name-display:hover,
+.review-description-display:hover
+{
+  border: 1px solid #D1D1D1;
+  border-radius: 4px;
+}
+
+.review-area-name-display:hover,
+.review-description-display:hover
+{
+  margin-top: -2px;
+}
+
+.review-title-input {
+  width: 100%;
+}
+
+.review-area-name-input {
+  width: 100%;
+}
+
+.review-title-display {
+  width: 100%;
+}
+
+.review-area-name {
+  padding-left: 20px;
+}
+
+.review-area-name-static, .review-description-static {
+  display: flex;
+  padding-left: 25px;
+}
+
+.review-area-name-display {
+  width: 100%;
+  padding: 5px;
+}
+
+.review-title-display {
+  width: 100%;
+}
+
+.review-description {
+  padding-bottom: 20px;
+  padding-left: 20px;
+}
+
+.review-photo {
+  padding-right: 5px;
+}
+
+.review-photos {
+  margin-left: 10px;
+}
+
+.remove-button {
+  width: 30px;
+  height: 30px;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #e74c3c;
+}
+
+.remove-button:hover {
+  background-color: #C7382B;
 }
 
 .review-photos img {
   max-width: 200px;
-}
-
-.review-list {
-  padding-bottom: 50px;
 }
 
 .username {
@@ -22,4 +121,24 @@
   font-style: italic;
   padding-left: 15px;
   font-size: 20px;
+}
+
+.refresh-icon {
+  width: 30px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #33C3F0;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.refresh-icon:hover {
+  background-color: #1EAEDB;
+}
+
+.pencil-icon {
+  width: 15px;
+  height: 15px;
+  padding-right: 5px;
+  padding-top: 12px;
 }

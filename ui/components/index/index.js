@@ -11,7 +11,7 @@ class Index extends React.Component {
     super(props);
     this.state = {
       authenticated: undefined,
-      userId: undefined,
+      username: undefined,
       showSignupForm: false,
       email: ''
     };
@@ -27,8 +27,8 @@ class Index extends React.Component {
     this.setState({authenticated: this.handleAuthentication()});
   }
 
-  setAuthenticated(authenticated, userId = undefined) {
-    this.setState({authenticated, userId});
+  setAuthenticated(authenticated, username = undefined) {
+    this.setState({authenticated, username});
   }
 
   handleSignupClick(email) {
@@ -52,7 +52,7 @@ class Index extends React.Component {
       if (response.ok) {
         const jsonPromise = response.json();
         jsonPromise
-        .then(json => this.setAuthenticated(true, json.id))
+        .then(json => this.setAuthenticated(true, json.username))
         .catch(err => console.log(err));
       } else if (response.status === 401) {
         this.setAuthenticated(false);
@@ -67,7 +67,7 @@ class Index extends React.Component {
     if (this.state.authenticated === undefined) {
       view = null;
     } else if (this.state.authenticated) {
-      view = <Main userId={this.state.userId}/>;
+      view = <Main username={this.state.username}/>;
     } else if (this.state.showSignupForm) {
       view = (
         <Signup

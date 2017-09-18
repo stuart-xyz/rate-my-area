@@ -2,14 +2,55 @@
   padding-bottom: 10px;
 }
 
-.file-upload-button {
-  margin-top: 5px;
+.form-input-title, .form-input-area-name {
+  width: 100%;
+}
+
+.form-input .form-input-description {
+  width: 100%;
+  height: 300px;
+  min-height: 300px;
+  resize: vertical;
+}
+
+.preview {
+  padding-right: 5px;
 }
 
 .preview-image {
-  width: 200px;
+  height: 175px;
+}
+
+.preview-cross {
+  width: 30px;
+  padding: 5px;
+  position: absolute;
+  cursor: pointer;
 }
 
 .dropzone-text {
   padding: 10px;
+  text-decoration: underline;
+  color: #1EAEDB;
+  cursor: pointer;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.preview-image-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  padding-bottom: 10px;
+}
+
+.form-error {
+  color: #B80000;
+  font-weight: bold;
+  margin: 0;
+  padding-bottom: 5px;
 }
