@@ -14,7 +14,8 @@ class AddReviewForm extends React.Component {
       files: [],
       formSubmitPending: false,
       dropRejected: false,
-      uploadTooLarge: false
+      uploadTooLarge: false,
+      submitAttempted: false
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -69,6 +70,11 @@ class AddReviewForm extends React.Component {
   }
 
   handleClick() {
+    if ((this.state.title === '') || (this.state.areaName === '') || (this.state.description === '')) {
+      this.setState({submitAttempted: true});
+      return;
+    }
+
     this.setState({formSubmitPending: true});
     const imagesPromise = Promise.all(this.state.files.map(file => {
       return new Promise((resolve, reject) => {
@@ -170,6 +176,14 @@ class AddReviewForm extends React.Component {
                 }}
               />
             </div>
+
+            {(this.state.title === '') && this.state.submitAttempted ?
+              <p className="form-error">Title cannot be empty</p> : null}
+            {(this.state.areaName === '') && this.state.submitAttempted ?
+              <p className="form-error">Area name cannot be empty</p> : null}
+            {(this.state.description === '') && this.state.submitAttempted ?
+              <p className="form-error">Description cannot be empty</p> : null}
+
             <div className="form-input">
               <Dropzone
                 accept="image/jpeg, image/png"
@@ -182,7 +196,7 @@ class AddReviewForm extends React.Component {
             </div>
 
             {this.state.dropRejected ?
-              <p className="image-error">Files must be jpeg or png format, maximum size 2MB</p> : null}
+              <p className="form-error">Files must be jpeg or png format, maximum size 2MB</p> : null}
 
             <div className="preview-image-container">
               {this.state.files.map(file => {

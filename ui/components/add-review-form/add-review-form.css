@@ -48,8 +48,9 @@
   padding-bottom: 10px;
 }
 
-.image-error {
+.form-error {
   color: #B80000;
   font-weight: bold;
-  padding-top: 5px;
+  margin: 0;
+  padding-bottom: 5px;
 }
