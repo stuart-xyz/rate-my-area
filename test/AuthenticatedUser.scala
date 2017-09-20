@@ -1,4 +1,3 @@
-import org.scalatest.Assertion
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
 import play.api.libs.json.{JsObject, Json}
@@ -6,7 +5,6 @@ import play.api.mvc.{Cookie, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 trait AuthenticatedUser extends PlaySpec {
@@ -19,7 +17,7 @@ trait AuthenticatedUser extends PlaySpec {
     "password" -> "password"
   )
 
-  def signupWithValidCredentials(): Assertion = {
+  def signupWithValidCredentials(): Unit = {
     val signupRequest = FakeRequest(POST, "/signup").withJsonBody(credentials)
     val signupResult = route(app, signupRequest).get
     status(signupResult) mustBe OK
@@ -33,8 +31,6 @@ trait AuthenticatedUser extends PlaySpec {
     loginResult
   }
 
-  def getAuthCookie: Future[Cookie] = {
-    loginWithValidCredentials().map(loginResult => Cookie("X-Auth-Token", loginResult.header.headers("X-Auth-Token")))
-  }
+  lazy val authCookie: Cookie = cookies(loginWithValidCredentials()).get("X-Auth-Token").getOrElse(throw new RuntimeException("Expected auth cookie"))
 
 }
