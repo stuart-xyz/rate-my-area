@@ -16,12 +16,12 @@ class ReviewControllerSpec extends PlaySpec with AuthenticatedUser with TestHelp
   "POST /reviews" should {
 
     "return HTTP 200 ok with authorisation cookie" in {
-      val result = makeSimpleRequest("reviews", authenticated = true, jsonBody = Some(sampleReview), POST)
+      val result = makeSimpleRequest("reviews", authCookieOption = Some(getAuthCookie), jsonBody = Some(sampleReview), POST)
       validateResult(result, OK, "message")
     }
 
     "return HTTP 401 unauthorised without an authorisation cookie" in {
-      val result = makeSimpleRequest("reviews", authenticated = false, jsonBody = Some(sampleReview), POST)
+      val result = makeSimpleRequest("reviews", authCookieOption = None, jsonBody = Some(sampleReview), POST)
       validateResult(result, UNAUTHORIZED, "error")
     }
 
@@ -31,15 +31,15 @@ class ReviewControllerSpec extends PlaySpec with AuthenticatedUser with TestHelp
 
     "return HTTP 200 ok with authorisation cookie" in {
       val futureResult = for {
-        _ <- makeSimpleRequest("reviews", authenticated = true, jsonBody = Some(sampleReview), POST)
-        result <- makeSimpleRequest("reviews", authenticated = true, jsonBody = None, GET)
+        _ <- makeSimpleRequest("reviews", authCookieOption = Some(getAuthCookie), jsonBody = Some(sampleReview), POST)
+        result <- makeSimpleRequest("reviews", authCookieOption = Some(getAuthCookie), jsonBody = None, GET)
       } yield result
 
       validateResult(futureResult, OK, "title")
     }
 
     "return HTTP 401 unauthorised without authorisation cookie" in {
-      val result = makeSimpleRequest("reviews", authenticated = false, jsonBody = None, GET)
+      val result = makeSimpleRequest("reviews", authCookieOption = None, jsonBody = None, GET)
       validateResult(result, UNAUTHORIZED, "error")
     }
 

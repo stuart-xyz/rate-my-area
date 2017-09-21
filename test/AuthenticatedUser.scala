@@ -1,10 +1,11 @@
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Cookie, Result}
+import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 trait AuthenticatedUser extends PlaySpec {
@@ -17,20 +18,20 @@ trait AuthenticatedUser extends PlaySpec {
     "password" -> "password"
   )
 
-  def signupWithValidCredentials(): Unit = {
+  def signupWithValidCredentials(): Future[Result] = {
     val signupRequest = FakeRequest(POST, "/signup").withJsonBody(credentials)
-    val signupResult = route(app, signupRequest).get
-    status(signupResult) mustBe OK
+    route(app, signupRequest).get
   }
 
   def loginWithValidCredentials(): Future[Result] = {
-    signupWithValidCredentials()
-    val loginRequest = FakeRequest(POST, "/login").withJsonBody(credentials)
-    val loginResult = route(app, loginRequest).get
-    status(loginResult) mustBe OK
-    loginResult
+    val futureResult = for {
+      _ <- signupWithValidCredentials()
+    } yield {
+      val loginRequest = FakeRequest(POST, "/login").withJsonBody(credentials)
+      val loginResult = route(app, loginRequest).get
+      loginResult
+    }
+    futureResult.flatMap(identity)
   }
-
-  lazy val authCookie: Cookie = cookies(loginWithValidCredentials()).get("X-Auth-Token").getOrElse(throw new RuntimeException("Expected auth cookie"))
 
 }
