@@ -32,8 +32,17 @@ class AuthControllerSpec extends PlaySpec with AuthenticatedUser with TestHelper
   }
 
   "GET /user" should {
-    "return HTTP 401 unauthorised without authorisation cookie" in simpleRequestCheck("user", authenticated = false, jsonBody = None, GET, UNAUTHORIZED, "error")
-    "return HTTP 200 ok with authorisation cookie" in simpleRequestCheck("user", authenticated = true, jsonBody = None, GET, OK, "message")
+
+    "return HTTP 401 unauthorised without authorisation cookie" in {
+      val result = makeSimpleRequest("user", authCookieOption = None, jsonBody = None, GET)
+      validateResult(result, UNAUTHORIZED, "error")
+    }
+
+    "return HTTP 200 ok with authorisation cookie" in {
+      val result = makeSimpleRequest("user", authCookieOption = Some(getAuthCookie), jsonBody = None, GET)
+      validateResult(result, OK, "username")
+    }
+
   }
 
 }
