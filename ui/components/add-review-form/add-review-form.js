@@ -42,11 +42,13 @@ class AddReviewForm extends React.Component {
         title: this.state.title,
         areaName: this.state.areaName,
         description: this.state.description,
-        imageUrls
+        imageUrls,
+        csrfToken: document.head.querySelector('[name=csrfToken]').content
       }),
       credentials: 'include',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Csrf-Token': document.head.querySelector('[name=csrfToken]').content
       }
     })
     .then(response => {
@@ -94,10 +96,14 @@ class AddReviewForm extends React.Component {
     imagesPromise.then(imageBlobs => {
       const formData = new FormData();
       imageBlobs.forEach(blob => formData.append('photo', blob));
+      formData.append('csrfToken', document.head.querySelector('[name=csrfToken]').content);
       fetch('/upload', {
         method: 'POST',
         body: formData,
-        credentials: 'include'
+        credentials: 'include',
+        headers: {
+          'Csrf-Token': document.head.querySelector('[name=csrfToken]').content
+        }
       })
       .then(response => {
         if (response.ok) {

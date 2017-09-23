@@ -42,10 +42,15 @@ class Login extends React.Component {
       if (this.validateEmail() && this.validatePassword()) {
         fetch('/login', {
           method: 'POST',
-          body: JSON.stringify({email: this.state.email, password: this.state.password}),
+          body: JSON.stringify({
+            email: this.state.email,
+            password: this.state.password,
+            csrfToken: document.head.querySelector('[name=csrfToken]').content
+          }),
           credentials: 'include',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Csrf-Token': document.head.querySelector('[name=csrfToken]').content
           }
         })
         .then(response => {

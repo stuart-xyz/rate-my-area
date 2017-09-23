@@ -31,7 +31,13 @@ class ReviewList extends React.Component {
   handleRemoveClick(reviewId) {
     fetch('/reviews/' + reviewId, {
       method: 'DELETE',
-      credentials: 'include'
+      body: JSON.stringify({
+        csrfToken: document.head.querySelector('[name=csrfToken]').content
+      }),
+      credentials: 'include',
+      headers: {
+        'Csrf-Token': document.head.querySelector('[name=csrfToken]').content
+      }
     })
     .then(response => {
       if (response.ok) {
@@ -44,13 +50,18 @@ class ReviewList extends React.Component {
     .catch(this.handleError);
   }
 
-  updateReview(reviewId, newField) {
+  updateReview(reviewId, updatedField, updatedValue) {
+    const body = {
+      csrfToken: document.head.querySelector('[name=csrfToken]').content
+    };
+    body[updatedField] = updatedValue;
     fetch('/reviews/' + reviewId, {
       method: 'PATCH',
       credentials: 'include',
-      body: JSON.stringify(newField),
+      body: JSON.stringify(body),
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Csrf-Token': document.head.querySelector('[name=csrfToken]').content
       }
     })
     .then(response => {
@@ -69,19 +80,19 @@ class ReviewList extends React.Component {
       switch (inputClassName) {
         case 'review-title-input':
           if (this.state.newTitle) {
-            this.updateReview(reviewId, {title: this.state.newTitle});
+            this.updateReview(reviewId, 'title', this.state.newTitle);
             this.setState({newTitle: undefined});
           }
           break;
         case 'review-area-name-input':
           if (this.state.newAreaName) {
-            this.updateReview(reviewId, {areaName: this.state.newAreaName});
+            this.updateReview(reviewId, 'areaName', this.state.newAreaName);
             this.setState({newAreaName: undefined});
           }
           break;
         case 'review-description-input':
           if (this.state.newDescription) {
-            this.updateReview(reviewId, {description: this.state.newDescription});
+            this.updateReview(reviewId, 'description', this.state.newDescription);
             this.setState({newDescription: undefined});
           }
           break;
