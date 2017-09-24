@@ -21,7 +21,8 @@ libraryDependencies ++= Seq(
   "de.svenkubiak" % "jBCrypt" % "0.4.1",
   "com.amazonaws" % "aws-java-sdk-s3" % "1.11.186",
   "com.h2database" % "h2" % "1.4.196" % Test,
-  "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.0" % Test
+  "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.0" % Test,
+  "org.mockito" % "mockito-core" % "2.10.0" % Test
 )
 
 pipelineStages := Seq(digest, gzip)
