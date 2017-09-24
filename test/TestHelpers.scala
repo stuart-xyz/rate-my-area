@@ -22,6 +22,12 @@ trait TestHelpers extends AuthenticatedUser {
       case POST =>
         val request = maybeAddAuthCookie(FakeRequest(POST, s"/$endpoint").withJsonBody(jsonBody.get), authCookieOption)
         route(app, request).get
+      case PATCH =>
+        val request = maybeAddAuthCookie(FakeRequest(PATCH, s"/$endpoint").withJsonBody(jsonBody.get), authCookieOption)
+        route(app, request).get
+      case DELETE =>
+        val request = maybeAddAuthCookie(FakeRequest(DELETE, s"/$endpoint"), authCookieOption)
+        route(app, request).get
     }
   }
 
@@ -33,10 +39,10 @@ trait TestHelpers extends AuthenticatedUser {
     cookies(loginResult).get("X-Auth-Token").getOrElse(throw new RuntimeException("Expected auth cookie"))
   }
 
-  def validateResult(result: Future[Result], expectedStatus: Int, jsonKeyToCheck: String): Assertion = {
-    status(result) mustBe expectedStatus
-    contentType(result) mustBe Some("application/json")
-    (contentAsJson(result) \\ jsonKeyToCheck).nonEmpty mustBe true
+  def validateResult(futureResult: Future[Result], expectedStatus: Int, jsonKeyToCheck: String): Assertion = {
+    status(futureResult) mustBe expectedStatus
+    contentType(futureResult) mustBe Some("application/json")
+    (contentAsJson(futureResult) \\ jsonKeyToCheck).nonEmpty mustBe true
   }
 
 }

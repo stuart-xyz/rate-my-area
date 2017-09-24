@@ -60,7 +60,7 @@ class ReviewController(cc: ControllerComponents, databaseService: DatabaseServic
             case Success(displayedReview) =>
               val editedReview = mergeEdits(displayedReview.review, reviewEditData)
               updateReviewInDatabase(editedReview)
-            case Failure(_: ReviewNotFoundException) => Future.successful(BadRequest(Json.obj("error" -> "Review does not exist")))
+            case Failure(_: ReviewNotFoundException) => Future.successful(NotFound(Json.obj("error" -> "Review does not exist")))
             case Failure(_) => Future.successful(InternalServerError(Json.obj("error" -> "Unexpected internal error")))
           }
           futureResult.flatMap(identity)
@@ -95,8 +95,10 @@ class ReviewController(cc: ControllerComponents, databaseService: DatabaseServic
     val futureResult = for {
       reviewTry <- getReview(id)
     } yield reviewTry match {
-      case Success(displayedReview) => deleteReviewFromDatabase(displayedReview.review)
-      case Failure(_: ReviewNotFoundException) => Future.successful(BadRequest(Json.obj("error" -> "Review does not exist")))
+      case Success(displayedReview) =>
+        displayedReview.imageUrls.foreach(imageUrl => s3Service.delete(imageUrl))
+        deleteReviewFromDatabase(displayedReview.review)
+      case Failure(_: ReviewNotFoundException) => Future.successful(NotFound(Json.obj("error" -> "Review does not exist")))
       case Failure(_) => Future.successful(InternalServerError(Json.obj("error" -> "Unexpected internal error")))
     }
     futureResult.flatMap(identity)
@@ -111,7 +113,6 @@ class ReviewController(cc: ControllerComponents, databaseService: DatabaseServic
         if (filteredReviews.isEmpty) Failure(new ReviewNotFoundException)
         else {
           val review = filteredReviews.head
-          review.imageUrls.foreach(imageUrl => s3Service.delete(imageUrl))
           Success(review)
         }
       case Failure(_) => Failure(new Exception)
