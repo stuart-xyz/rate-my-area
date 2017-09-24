@@ -1,10 +1,21 @@
+import java.io.File
+
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.{BaseOneAppPerTest, PlaySpec}
+import play.api.Application
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
+import services.S3Service
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ReviewControllerSpec extends PlaySpec with AuthenticatedUser with TestHelpers with BaseOneAppPerTest with AppApplicationFactory {
+class ReviewControllerSpec extends PlaySpec with AuthenticatedUser with TestHelpers with BaseOneAppPerTest with AppApplicationFactory with MockitoSugar {
+
+  val mockS3Service: S3Service = mock[S3Service]
+  when(mockS3Service.upload(any[File], any[String], any[Int])) thenReturn "test"
+  override def fakeApplication(): Application = new AppApplicationBuilder().build(Some(mockS3Service))
 
   val review: JsObject = Json.obj(
     "title" -> "title",
