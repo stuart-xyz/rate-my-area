@@ -56,7 +56,7 @@ class AuthService(cacheApi: SyncCacheApi, databaseService: DatabaseService)(impl
     header.cookies.get(cookieHeader).flatMap(cookie => cacheApi.get[User](cookie.value))
   }
 
-  private def generateCookie(user: User): Cookie = {
+  def generateCookie(user: User): Cookie = {
     val randomPart = UUID.randomUUID().toString.toUpperCase
     val userPart = user.id.toString.toUpperCase
     val key = s"$randomPart|$userPart"
