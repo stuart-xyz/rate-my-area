@@ -31,7 +31,7 @@ class UploadControllerSpec extends PlaySpec with AuthenticatedUser with TestHelp
   when(mockAuthService.checkCookie(any[RequestHeader])) thenReturn mockUser
 
   val mockUserAuthAction = new UserAuthAction(stubBodyParser(), mockAuthService)
-  val mockUploadController = new UploadController(stubControllerComponents(playBodyParsers = stubPlayBodyParsers), mockUserAuthAction, mockS3Service)
+  val mockUploadController = new UploadController(stubControllerComponents(), mockUserAuthAction, mockS3Service)
 
   "POST /upload" should {
 
