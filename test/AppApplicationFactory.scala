@@ -16,7 +16,8 @@ trait AppApplicationFactory extends FakeApplicationFactory {
         initialConfiguration = Configuration.load(env),
         lifecycle = new DefaultApplicationLifecycle()
       )
-      val loader = new AppApplicationLoader(s3ServiceOverride)
+      val loader = new AppApplicationLoader()
+      loader.setS3ServiceOverride(s3ServiceOverride)
       loader.load(context)
     }
   }

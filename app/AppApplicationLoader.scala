@@ -14,7 +14,10 @@ import services.S3Service
 
 import scala.concurrent.ExecutionContext
 
-class AppApplicationLoader(s3ServiceOverride: Option[S3Service] = None) extends ApplicationLoader {
+class AppApplicationLoader extends ApplicationLoader {
+
+  var s3ServiceOverride: Option[S3Service] = None
+  def setS3ServiceOverride(s3ServiceOverride: Option[S3Service]): Unit = this.s3ServiceOverride = s3ServiceOverride
 
   override def load(context: Context): Application = {
     new AppComponents(context, s3ServiceOverride).application
