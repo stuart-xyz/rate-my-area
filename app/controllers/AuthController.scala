@@ -68,7 +68,7 @@ class AuthController(cc: ControllerComponents, databaseService: DatabaseService,
   }
 
   def getUser = userAuthAction { implicit request =>
-    Ok(Json.toJson(request.user))
+    Ok(Json.toJsObject(request.user) - "hashedPassword" - "salt")
   }
 
 }
