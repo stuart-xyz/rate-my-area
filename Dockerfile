@@ -6,17 +6,13 @@ RUN apt-get install -y supervisor unzip
 
 # Add source
 
-ADD . /usr/src/rate-my-area
-RUN mkdir -p /usr/src/rate-my-area/.sbt
-RUN mkdir -p /usr/src/rate-my-area/.ivy2
-RUN cp -r /usr/src/rate-my-area/.sbt /root
-RUN cp -r /usr/src/rate-my-area/.ivy2 /root
+ADD docker-conf /usr/src/rate-my-area/docker-conf
+ADD target/universal/rate-my-area-1.0-SNAPSHOT.zip /usr/src/rate-my-area
 
 # Build
 
 WORKDIR /usr/src/rate-my-area
-RUN sbt dist
-RUN unzip /usr/src/rate-my-area/target/universal/rate-my-area-1.0-SNAPSHOT.zip
+RUN unzip /usr/src/rate-my-area/rate-my-area-1.0-SNAPSHOT.zip
 
 # Set up automated SSL certificate renewal
 
