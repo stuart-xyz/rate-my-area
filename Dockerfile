@@ -2,6 +2,7 @@ FROM ubuntu:16.04
 
 # Install pre-requisites
 
+RUN apt-get update
 RUN apt-get install -y supervisor unzip software-properties-common python-software-properties apt-transport-https
 
 # Install Java
@@ -25,12 +26,12 @@ RUN add-apt-repository ppa:certbot/certbot
 RUN apt-get update
 RUN apt-get install -y nginx python-certbot-nginx
 
-# Add source
+# Add build and config
 
 ADD docker-conf /usr/src/rate-my-area/docker-conf
 ADD target/universal/rate-my-area-1.0-SNAPSHOT.zip /usr/src/rate-my-area
 
-# Build
+# Extract build
 
 WORKDIR /usr/src/rate-my-area
 RUN unzip /usr/src/rate-my-area/rate-my-area-1.0-SNAPSHOT.zip
