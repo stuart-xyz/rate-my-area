@@ -3,9 +3,10 @@ jobs:
   build-frontend:
     docker:
       - image: circleci/node:8.9.3
-    working_directory: ~/repo/ui
+    working_directory: ~/repo
     steps:
       - checkout
+      - run: cd ui
       - restore_cache:
           keys:
           - frontend-dependencies-{{ checksum "package.json" }}
