@@ -1,0 +1,3 @@
+[submodule "ui"]
+	path = ui
+	url = git@github.com:stuart-xyz/rate-my-area-ui.git
