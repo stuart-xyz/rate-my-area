@@ -12,6 +12,7 @@ jobs:
           - frontend-dependencies-{{ checksum "ui/package.json" }}
           # fallback to using the latest cache if no exact match is found
           - frontend-dependencies-
+      - run: cd ui && npm install
       - run: cd ui && npm test
       - run: cd ui && npm run build
       - save_cache:
