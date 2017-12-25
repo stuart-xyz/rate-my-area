@@ -14,12 +14,6 @@ RUN echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-sel
 RUN apt-get install -y oracle-java8-installer
 RUN apt-get install -y oracle-java8-set-default
 
-# Install Node
-
-RUN apt-get install -y curl
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
-RUN apt-get install -y nodejs
-
 # Install nginx and LetsEncrypt Certbot
 
 RUN add-apt-repository ppa:certbot/certbot
