@@ -39,7 +39,8 @@ jobs:
           - backend-dependencies-
       - attach_workspace:
           at: /tmp/workspace
-      - run: cp /tmp/workspace/ui/build/* ../public/compiled
+      - run: mkdir -p public/compiled
+      - run: cp /tmp/workspace/ui/build/* public/compiled
       - run: cat /dev/null | sbt test:compile
       - run: cat /dev/null | sbt test:test
       - run: cat /dev/null | sbt dist
