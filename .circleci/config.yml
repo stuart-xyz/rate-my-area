@@ -67,9 +67,9 @@ jobs:
           at: /tmp/workspace
       - run: mkdir -p target/universal
       - run: cp /tmp/workspace/backend/rate-my-area-1.0-SNAPSHOT.zip target/universal
-      - run: docker build -t stuartp.io/ratemyarea --build-arg BUILD_ENV=prod .
+      - run: docker build -t $AWS_REPOSITORY_URL/stuartp.io/ratemyarea --build-arg BUILD_ENV=prod .
       - run: $(aws ecr get-login --region eu-west-2 --no-include-email)
-      - run: docker push stuartp.io/ratemyarea
+      - run: docker push $AWS_REPOSITORY_URL/stuartp.io/ratemyarea
 
 workflows:
   version: 2
