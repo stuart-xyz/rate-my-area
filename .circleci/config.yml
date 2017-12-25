@@ -1,42 +1,87 @@
-# Scala CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/sample-config/ for more details
-#
 version: 2
 jobs:
-  build:
+  build-frontend:
     docker:
-      # specify the version you desire here
-      - image: circleci/openjdk:8-jdk
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
-
-    working_directory: ~/rate-my-area
-
-    environment:
-      # Customize the JVM maximum heap limit
-      JVM_OPTS: -Xmx3200m
-      TERM: dumb
-
+      - image: circleci/node:8.9.3
+    working_directory: ~/repo
     steps:
       - checkout
-
-      # Download and cache dependencies
+      - run: git submodule init && git submodule update
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "build.sbt" }}
+          - frontend-dependencies-{{ checksum "ui/package.json" }}
           # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+          - frontend-dependencies-
+      - run: cd ui && npm install
+      - run: cd ui && npm test
+      - run: cd ui && npm run build
+      - save_cache:
+          paths:
+            - ui/node_modules
+          key: v1-dependencies-{{ checksum "ui/package.json" }}
+      - run: mkdir -p /tmp/workspace/ui
+      - run: cp -r ui/build /tmp/workspace/ui/build
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - ui/build
 
+  build-backend:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - backend-dependencies-{{ checksum "build.sbt" }}
+          # fallback to using the latest cache if no exact match is found
+          - backend-dependencies-
+      - attach_workspace:
+          at: /tmp/workspace
+      - run: mkdir -p public/compiled
+      - run: cp /tmp/workspace/ui/build/* public/compiled
       - run: cat /dev/null | sbt test:compile
-
+      - run: cat /dev/null | sbt test:test
+      - run: cat /dev/null | sbt dist
       - save_cache:
           paths:
             - ~/.m2
-          key: v1-dependencies--{{ checksum "build.sbt" }}
+          key: v1-dependencies-{{ checksum "build.sbt" }}
+      - store_artifacts:
+          path: ~/repo/build
+          destination: build
+      - run: mkdir -p /tmp/workspace/backend
+      - run: cp target/universal/rate-my-area-1.0-SNAPSHOT.zip /tmp/workspace/backend
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - backend
 
-      # run tests!
-      - run: cat /dev/null | sbt test:test
+  deploy:
+    machine: true
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /tmp/workspace
+      - run: mkdir -p target/universal
+      - run: cp /tmp/workspace/backend/rate-my-area-1.0-SNAPSHOT.zip target/universal
+      - run: docker build -t stuartp.io/ratemyarea --build-arg BUILD_ENV=prod .
+      - run: $(aws ecr get-login --region eu-west-2 --no-include-email)
+      - run: docker push stuartp.io/ratemyarea
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build-frontend
+      - build-backend:
+          requires:
+            - build-frontend
+      - deploy:
+          requires:
+            - build-backend
+          filters:
+            branches:
+              only: master
