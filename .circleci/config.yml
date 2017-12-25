@@ -20,7 +20,7 @@ jobs:
             - ui/node_modules
           key: v1-dependencies-{{ checksum "ui/package.json" }}
       - run: mkdir -p /tmp/workspace
-      - run: cp -r ui/build /tmp/workspace
+      - run: cp -r ui/build /tmp/workspace/ui
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
