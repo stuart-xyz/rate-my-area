@@ -19,7 +19,7 @@ jobs:
           paths:
             - ui/node_modules
           key: v1-dependencies-{{ checksum "ui/package.json" }}
-      - run: mkdir -p /tmp/workspace && mkdir -p /tmp/workspace/ui
+      - run: mkdir -p /tmp/workspace/ui
       - run: cp -r ui/build /tmp/workspace/ui/build
       - persist_to_workspace:
           root: /tmp/workspace
@@ -51,11 +51,22 @@ jobs:
       - store_artifacts:
           path: ~/repo/build
           destination: build
+      - run: mkdir -p /tmp/workspace/backend
+      - run: cp target/universal/rate-my-area-1.0-SNAPSHOT.zip /tmp/workspace/backend
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - backend
 
   deploy:
     machine: true
+    working_directory: ~/repo
     steps:
       - checkout
+      - attach_workspace:
+          at: /tmp/workspace
+      - run: mkdir -p target/universal
+      - run: cp /tmp/workspace/backend/rate-my-area-1.0-SNAPSHOT.zip target/universal
       - run: docker build -t stuartp.io/ratemyarea --build-arg BUILD_ENV=dev .
       - run: aws configure && $(aws ecr get-login --region eu-west-2 --no-include-email)
       - run: docker push stuartp.io/ratemyarea:circle
