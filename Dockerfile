@@ -1,22 +1,40 @@
-FROM stuartxyz/scala-web-app
+FROM ubuntu:16.04
 
-# Install extra pre-requisites
+# Install pre-requisites
 
-RUN apt-get install -y supervisor unzip
+RUN apt-get update
+RUN apt-get install -y supervisor unzip software-properties-common python-software-properties apt-transport-https
 
-# Add source
+# Install Java
 
-ADD . /usr/src/rate-my-area
-RUN mkdir -p /usr/src/rate-my-area/.sbt
-RUN mkdir -p /usr/src/rate-my-area/.ivy2
-RUN cp -r /usr/src/rate-my-area/.sbt /root
-RUN cp -r /usr/src/rate-my-area/.ivy2 /root
+RUN add-apt-repository ppa:webupd8team/java
+RUN apt-get update
+RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+RUN echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
+RUN apt-get install -y oracle-java8-installer
+RUN apt-get install -y oracle-java8-set-default
 
-# Build
+# Install Node
+
+RUN apt-get install -y curl
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
+RUN apt-get install -y nodejs
+
+# Install nginx and LetsEncrypt Certbot
+
+RUN add-apt-repository ppa:certbot/certbot
+RUN apt-get update
+RUN apt-get install -y nginx python-certbot-nginx
+
+# Add build and config
+
+ADD docker-conf /usr/src/rate-my-area/docker-conf
+ADD target/universal/rate-my-area-1.0-SNAPSHOT.zip /usr/src/rate-my-area
+
+# Extract build
 
 WORKDIR /usr/src/rate-my-area
-RUN sbt dist
-RUN unzip /usr/src/rate-my-area/target/universal/rate-my-area-1.0-SNAPSHOT.zip
+RUN unzip /usr/src/rate-my-area/rate-my-area-1.0-SNAPSHOT.zip
 
 # Set up automated SSL certificate renewal
 
