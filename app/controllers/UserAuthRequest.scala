@@ -1,4 +1,4 @@
-package services
+package controllers
 
 import models.User
 import play.api.mvc.{Request, WrappedRequest}

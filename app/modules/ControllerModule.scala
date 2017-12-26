@@ -1,11 +1,11 @@
 package modules
 
-import controllers.{AuthController, IndexController, ReviewController, UploadController}
+import controllers._
 import play.api.ApplicationLoader.Context
 import play.api.Configuration
 import play.api.cache.SyncCacheApi
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
-import services.{AuthService, DatabaseService, S3Service, UserAuthAction}
+import services.{AuthService, DatabaseService, S3Service}
 
 import scala.concurrent.ExecutionContext
 
