@@ -10,18 +10,22 @@ import play.api.mvc.{AnyContent, BodyParser}
 import play.api.routing.Router
 import play.filters.HttpFiltersComponents
 import router.Routes
+import services.S3Service
 
 import scala.concurrent.ExecutionContext
 
 class AppApplicationLoader extends ApplicationLoader {
 
+  var s3ServiceOverride: Option[S3Service] = None
+  def setS3ServiceOverride(s3ServiceOverride: Option[S3Service]): Unit = this.s3ServiceOverride = s3ServiceOverride
+
   override def load(context: Context): Application = {
-    new AppComponents(context).application
+    new AppComponents(context, s3ServiceOverride).application
   }
 
 }
 
-class AppComponents(val context: Context) extends BuiltInComponentsFromContext(context)
+class AppComponents(val context: Context, val s3ServiceOverride: Option[S3Service]) extends BuiltInComponentsFromContext(context)
   with HttpFiltersComponents
   with AssetsComponents
   with EhCacheComponents

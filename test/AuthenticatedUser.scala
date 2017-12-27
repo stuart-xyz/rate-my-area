@@ -1,8 +1,7 @@
-import org.scalatest.Assertion
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Cookie, Result}
+import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
@@ -19,22 +18,20 @@ trait AuthenticatedUser extends PlaySpec {
     "password" -> "password"
   )
 
-  def signupWithValidCredentials(): Assertion = {
+  def signupWithValidCredentials(): Future[Result] = {
     val signupRequest = FakeRequest(POST, "/signup").withJsonBody(credentials)
-    val signupResult = route(app, signupRequest).get
-    status(signupResult) mustBe OK
+    route(app, signupRequest).get
   }
 
   def loginWithValidCredentials(): Future[Result] = {
-    signupWithValidCredentials()
-    val loginRequest = FakeRequest(POST, "/login").withJsonBody(credentials)
-    val loginResult = route(app, loginRequest).get
-    status(loginResult) mustBe OK
-    loginResult
-  }
-
-  def getAuthCookie: Future[Cookie] = {
-    loginWithValidCredentials().map(loginResult => Cookie("X-Auth-Token", loginResult.header.headers("X-Auth-Token")))
+    val futureResult = for {
+      _ <- signupWithValidCredentials()
+    } yield {
+      val loginRequest = FakeRequest(POST, "/login").withJsonBody(credentials)
+      val loginResult = route(app, loginRequest).get
+      loginResult
+    }
+    futureResult.flatMap(identity)
   }
 
 }

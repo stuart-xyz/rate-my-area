@@ -2,11 +2,12 @@ import org.scalatestplus.play.FakeApplicationFactory
 import play.api.inject.DefaultApplicationLifecycle
 import play.api.{Application, ApplicationLoader, Configuration, Environment}
 import play.core.DefaultWebCommands
+import services.S3Service
 
 trait AppApplicationFactory extends FakeApplicationFactory {
 
-  private class AppApplicationBuilder {
-    def build(): Application = {
+  class AppApplicationBuilder {
+    def build(s3ServiceOverride: Option[S3Service] = None): Application = {
       val env = Environment.simple()
       val context = ApplicationLoader.Context(
         environment = env,
@@ -16,6 +17,7 @@ trait AppApplicationFactory extends FakeApplicationFactory {
         lifecycle = new DefaultApplicationLifecycle()
       )
       val loader = new AppApplicationLoader()
+      loader.setS3ServiceOverride(s3ServiceOverride)
       loader.load(context)
     }
   }

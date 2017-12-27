@@ -4,7 +4,8 @@ import controllers.AuthController.{UserLoginData, UserSignupData}
 import org.postgresql.util.PSQLException
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
+import play.api.mvc._
+import services.CustomExceptions.UserNotLoggedInException
 import services.{AuthService, DatabaseService, UserAuthAction}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -13,23 +14,23 @@ import scala.util.{Failure, Success}
 class AuthController(cc: ControllerComponents, databaseService: DatabaseService, authService: AuthService, userAuthAction: UserAuthAction)(implicit ec: ExecutionContext)
   extends AbstractController(cc) {
 
+  private val cookieHeader = "X-Auth-Token"
+
   def login: Action[AnyContent] = Action.async { implicit request =>
     request.body.asJson match {
       case Some(json) => json.validate[UserLoginData].fold(
         errors => Future.successful(BadRequest(Json.obj("error" -> "Expected username and password"))),
         userLoginData => {
-          val resultAttempt = for {
-            cookieOptionFuture <- authService.login(userLoginData.email, userLoginData.password)
-          } yield for {
-            cookieOption <- cookieOptionFuture
-          } yield cookieOption match {
-            case Some(cookie) => Ok(Json.obj("message" -> "Log in successful")).withCookies(cookie)
-            case None => Unauthorized(Json.obj("error" -> "Invalid login credentials provided"))
-          }
-
-          resultAttempt match {
-            case Success(result) => result
-            case Failure(_) => Future.successful(InternalServerError(Json.obj("error" -> "Unexpected internal error occurred")))
+          for {
+            cookieOptionTry <- authService.login(userLoginData.email, userLoginData.password)
+          } yield {
+            cookieOptionTry match {
+              case Success(cookieOption) => cookieOption match {
+                case Some(cookie) => Ok(Json.obj("message" -> "Log in successful")).withCookies(cookie)
+                case None => Unauthorized(Json.obj("error" -> "Invalid login credentials provided"))
+              }
+              case Failure(_) => InternalServerError(Json.obj("error" -> "Unexpected internal error occurred"))
+            }
           }
         }
       )
@@ -54,8 +55,20 @@ class AuthController(cc: ControllerComponents, databaseService: DatabaseService,
     }
   }
 
+  def logout = userAuthAction { implicit request =>
+    authService.logout(request) match {
+      case None => Unauthorized(Json.obj("error" -> "Unauthorised"))
+      case Some(removeCookieAttempt) =>
+        removeCookieAttempt match {
+          case Success(_) => Ok(Json.obj("message" -> "Successfully logged out")).discardingCookies(DiscardingCookie(cookieHeader))
+          case Failure(_: UserNotLoggedInException) => BadRequest(Json.obj("error" -> "The specified authentication token is not active"))
+          case Failure(_) => InternalServerError(Json.obj("error" -> "Unexpected internal error"))
+        }
+    }
+  }
+
   def getUser = userAuthAction { implicit request =>
-    Ok(Json.toJson(request.user))
+    Ok(Json.toJsObject(request.user) - "hashedPassword" - "salt")
   }
 
 }

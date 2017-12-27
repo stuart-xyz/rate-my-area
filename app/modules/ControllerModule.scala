@@ -5,7 +5,7 @@ import play.api.ApplicationLoader.Context
 import play.api.Configuration
 import play.api.cache.SyncCacheApi
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
-import services.{AuthService, DatabaseService, UploadService, UserAuthAction}
+import services.{AuthService, DatabaseService, S3Service, UserAuthAction}
 
 import scala.concurrent.ExecutionContext
 
@@ -21,11 +21,12 @@ trait ControllerModule {
   def defaultSyncCacheApi: SyncCacheApi
   def appConfig: Configuration
   def context: Context
-
-  private val s3Client = new S3ClientWrapper(appConfig, context.environment.mode)
+  def s3ServiceOverride: Option[S3Service]
 
   lazy val authService = new AuthService(defaultSyncCacheApi, databaseService)
-  lazy val uploadService = new UploadService(appConfig, s3Client)
+  lazy val s3Service: S3Service =
+    if (s3ServiceOverride.isDefined) s3ServiceOverride.get
+    else new S3Service(appConfig)
   lazy val userAuthAction: UserAuthAction = wire[UserAuthAction]
 
   lazy val indexController: IndexController = wire[IndexController]
