@@ -44,7 +44,7 @@ RUN cp docker-conf/schedule-certbot-renew /etc/cron.d/schedule-certbot-renew
 RUN cp docker-conf/nginx.conf /etc/nginx/nginx.conf
 RUN cp docker-conf/$BUILD_ENV/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN mkdir -p /var/log/supervisor
-RUN chmod a+x /usr/src/ratemyarea/docker-conf/start-backend.sh
+RUN chmod a+x docker-conf/start-backend.sh
 
 # Run command
 
