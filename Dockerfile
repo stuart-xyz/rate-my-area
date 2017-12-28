@@ -32,16 +32,16 @@ RUN unzip /usr/src/rate-my-area/rate-my-area-1.0-SNAPSHOT.zip
 
 # Set up automated SSL certificate renewal
 
+ARG BUILD_ENV
 RUN mkdir -p /var/log/letsencrypt
+RUN cp docker-conf/$BUILD_ENV/certbot-init.sh docker-conf/certbot-init.sh
 RUN chmod a+x docker-conf/certbot-init.sh
 RUN chmod a+x docker-conf/certbot-renew.sh
 RUN cp docker-conf/schedule-certbot-renew /etc/cron.d/schedule-certbot-renew
 
 # Copy config
 
-ARG BUILD_ENV
-RUN touch docker-conf/dev/nginx.conf
-RUN cp docker-conf/$BUILD_ENV/nginx.conf /etc/nginx/nginx.conf
+RUN cp docker-conf/nginx.conf /etc/nginx/nginx.conf
 RUN cp docker-conf/$BUILD_ENV/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN mkdir -p /var/log/supervisor
 
