@@ -5,6 +5,6 @@ target/
 /ui/node_modules/
 /public/compiled/
 *.DS_Store
-/conf/production.conf
+conf/secrets.conf
 /.ivy2/
 /.sbt/
