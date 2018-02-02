@@ -2,6 +2,13 @@
 
 A website for submitting photos and reviews of your area, built to demonstrate the use of a modern Scala tech stack: Play Framework 2.6, Macwire compile-time DI, Slick ORM, ScalaTest, React and Webpack.
 
+Included:
+* Continuous integration and delivery scripts (Docker and CircleCI).
+* Example nginx and supervisor configurations.
+* Database evolution scripts.
+* Lots more example code for whole stack described above.
+* A few pictures of London.
+
 Database evolutions will automatically set up a fresh Postgres database. The application is packaged into a Docker image - just add your own API keys to run in production. TLS certificates can be automatically generated and renewed using LetsEncrypt Certbot.
 
 UI files live in a separate repository at https://github.com/stuart-xyz/rate-my-area-ui.
@@ -43,7 +50,7 @@ Also change `s3-region` and `s3-bucket-name` in `application.conf` for your own 
 
 A CircleCI config is provided - simply replace with your own details and make sure your AWS credentials are stored in CircleCI project settings. `$AWS_REPOSITORY_URL` also needs to be provided as an environment variable inside CircleCI.
 
-## Manual deploy
+## Manual deployment
 
 Build the Docker image:
 ```
