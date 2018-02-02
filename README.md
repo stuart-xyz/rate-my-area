@@ -2,7 +2,7 @@
 
 A website for submitting photos and reviews of your area, built to demonstrate the use of a modern Scala tech stack: Play Framework 2.6, Macwire compile-time DI, Slick ORM, ScalaTest, React and Webpack.
 
-The application is packaged into a Docker image - just add your own API keys to run in production. TLS certificates are automatically generated and renewed using LetsEncrypt Certbot.
+The application is packaged into a Docker image - just add your own API keys to run in production. TLS certificates can be automatically generated and renewed using LetsEncrypt Certbot.
 
 UI files live in a separate repository at https://github.com/stuart-xyz/rate-my-area-ui.
 
@@ -47,6 +47,6 @@ docker build -t stuartp.io/ratemyarea --build-arg BUILD_ENV=[local/dev/prod] .
 ```
 
 Build environments:
-* `local`: just the backend runs, no attempt to generate TLS certificates.
-* `dev`: also attempts to generate test TLS certificates from LetsEncrypt.
-* `prod`: attempts to generate real TLS certificates from LetsEncrypt.
+* `local`: just the backend runs, no attempt to generate a TLS certificate.
+* `dev`: also attempts to generate a test TLS certificate from LetsEncrypt.
+* `prod`: attempts to generate a real TLS certificate from LetsEncrypt.
