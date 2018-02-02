@@ -5,7 +5,7 @@ import models.{DisplayedReview, Review}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, JsonValidationError, Reads}
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
-import services.{DatabaseService, S3Service, UserAuthAction}
+import services.{DatabaseService, S3Service}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}

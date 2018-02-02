@@ -1,7 +1,8 @@
-package services
+package controllers
 
 import play.api.libs.json.Json
 import play.api.mvc._
+import services.AuthService
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -11,7 +12,7 @@ class UserAuthAction(val parser: BodyParser[AnyContent], authService: AuthServic
   override def invokeBlock[A](request: Request[A], block: (UserAuthRequest[A]) => Future[Result]): Future[Result] = {
     authService.checkCookie(request) match {
       case None => Future.successful(Results.Unauthorized(Json.obj("error" -> "Unauthorised")))
-      case Some(user) => block(UserAuthRequest(user, request))
+      case Some(user) => block(controllers.UserAuthRequest(user, request))
     }
   }
 

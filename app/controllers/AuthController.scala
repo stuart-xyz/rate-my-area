@@ -6,7 +6,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.mvc._
 import services.CustomExceptions.UserNotLoggedInException
-import services.{AuthService, DatabaseService, UserAuthAction}
+import services.{AuthService, DatabaseService}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}

@@ -5,7 +5,7 @@ import java.util.UUID
 import akka.actor.ActorSystem
 import play.api.libs.json.Json
 import play.api.mvc._
-import services.{S3Service, UserAuthAction}
+import services.S3Service
 
 import scala.concurrent.{ExecutionContext, Future}
 
