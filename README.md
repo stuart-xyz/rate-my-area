@@ -39,9 +39,13 @@ play.http.secret.key = "XXX"
 
 Also change `s3-region` and `s3-bucket-name` in `application.conf` for your own setup.
 
-## Deploy
+## Automated deployment with CircleCI
 
-To build the Docker image:
+A CircleCI config is provided - simply replace with your own details and make sure your AWS credentials are stored in CircleCI project settings. `$AWS_REPOSITORY_URL` also needs to be provided as an environment variable inside CircleCI.
+
+## Manual deploy
+
+Build the Docker image:
 ```
 docker build -t stuartp.io/ratemyarea --build-arg BUILD_ENV=[local/dev/prod] .
 ```
