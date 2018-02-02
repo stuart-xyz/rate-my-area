@@ -16,6 +16,14 @@ An example deployment is hosted on AWS, at https://ratemyarea.stuartp.io, as sho
 * Docker installation
 * PostgreSQL server
 
+## Test
+
+```
+sbt test
+```
+
+Tests use an in-memory H2 database for storage, and Mockito to mock dependencies.
+
 ## Run
 
 ```
@@ -31,10 +39,14 @@ play.http.secret.key = "XXX"
 
 Also change `s3-region` and `s3-bucket-name` in `application.conf` for your own setup.
 
-## Test
+## Deploy
 
+To build the Docker image:
 ```
-sbt test
+docker build -t stuartp.io/ratemyarea --build-arg BUILD_ENV=[local/dev/prod] .
 ```
 
-Tests use an in-memory H2 database for storage, and Mockito to mock dependencies.
+Build environments:
+* `local`: just the backend runs, no attempt to generate TLS certificates.
+* `dev`: also attempts to generate test TLS certificates from LetsEncrypt.
+* `prod`: attempts to generate real TLS certificates from LetsEncrypt.
