@@ -2,7 +2,7 @@
 
 A website for submitting photos and reviews of your area, built to demonstrate the use of a modern Scala tech stack: Play Framework 2.6, Macwire compile-time DI, Slick ORM, ScalaTest, React and Webpack.
 
-The application is packaged into a Docker image - just add your own API keys to run in production. TLS certificates can be automatically generated and renewed using LetsEncrypt Certbot.
+Database evolutions will automatically set up a fresh Postgres database. The application is packaged into a Docker image - just add your own API keys to run in production. TLS certificates can be automatically generated and renewed using LetsEncrypt Certbot.
 
 UI files live in a separate repository at https://github.com/stuart-xyz/rate-my-area-ui.
 
