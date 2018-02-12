@@ -2,10 +2,13 @@ package services
 
 import java.security.MessageDigest
 import java.util.concurrent.TimeUnit
-import java.util.{Base64, UUID}
+import java.util.{Base64, Calendar, TimeZone, UUID}
 
+import com.auth0.jwt.JWT
+import com.auth0.jwt.algorithms.Algorithm
 import models.User
 import org.mindrot.jbcrypt.BCrypt
+import play.api.Configuration
 import play.api.cache.SyncCacheApi
 import play.api.mvc.{Cookie, RequestHeader}
 import services.CustomExceptions.UserNotLoggedInException
@@ -14,7 +17,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
-class AuthService(cacheApi: SyncCacheApi, databaseService: DatabaseService)(implicit ec: ExecutionContext) {
+class AuthService(cacheApi: SyncCacheApi, databaseService: DatabaseService, appConfig: Configuration)(implicit ec: ExecutionContext) {
 
   case class HashedPasswordWithSalt(hashedPassword: String, salt: String)
   private val mda = MessageDigest.getInstance("SHA-512")
@@ -64,6 +67,16 @@ class AuthService(cacheApi: SyncCacheApi, databaseService: DatabaseService)(impl
     val duration = Duration.create(10, TimeUnit.HOURS)
     cacheApi.set(token, user, duration)
     Cookie(cookieHeader, token, maxAge = Some(duration.toSeconds.toInt))
+  }
+
+  def generateJWT(user: User): String = {
+    val algorithm = Algorithm.HMAC256(appConfig.get[String]("play.http.secret.key"))
+    val nowPlusTenHours = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+    nowPlusTenHours.add(Calendar.HOUR, 10)
+    JWT.create
+      .withClaim("id", user.id)
+      .withExpiresAt(nowPlusTenHours.getTime)
+      .sign(algorithm)
   }
 
 }

@@ -23,7 +23,7 @@ trait ControllerModule {
   def context: Context
   def s3ServiceOverride: Option[S3Service]
 
-  lazy val authService = new AuthService(defaultSyncCacheApi, databaseService)
+  lazy val authService = new AuthService(defaultSyncCacheApi, databaseService, appConfig)
   lazy val s3Service: S3Service =
     if (s3ServiceOverride.isDefined) s3ServiceOverride.get
     else new S3Service(appConfig)
