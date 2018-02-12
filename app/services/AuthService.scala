@@ -22,6 +22,7 @@ class AuthService(cacheApi: SyncCacheApi, databaseService: DatabaseService, appC
   case class HashedPasswordWithSalt(hashedPassword: String, salt: String)
   private val mda = MessageDigest.getInstance("SHA-512")
   private val cookieHeader = "X-Auth-Token"
+  private val algorithm = Algorithm.HMAC256(appConfig.get[String]("play.http.secret.key"))
 
   def login(email: String, password: String): Future[Try[Option[Cookie]]] = {
     for {
@@ -29,7 +30,7 @@ class AuthService(cacheApi: SyncCacheApi, databaseService: DatabaseService, appC
     } yield userOptionTry match {
       case Success(userOption) =>
         val cookieOption = userOption.flatMap(user => {
-          if (BCrypt.checkpw(password, user.hashedPassword)) Some(generateCookie(user))
+          if (BCrypt.checkpw(password, user.hashedPassword)) Some(generateJWTCookie(user))
           else None
         })
         Success(cookieOption)
@@ -69,14 +70,29 @@ class AuthService(cacheApi: SyncCacheApi, databaseService: DatabaseService, appC
     Cookie(cookieHeader, token, maxAge = Some(duration.toSeconds.toInt))
   }
 
-  def generateJWT(user: User): String = {
-    val algorithm = Algorithm.HMAC256(appConfig.get[String]("play.http.secret.key"))
+  def checkJWT(header: RequestHeader): Option[User] = {
+    val tokenOption = header.cookies.get(cookieHeader).map(_.value)
+    tokenOption.flatMap(token => {
+      val verifier = JWT.require(algorithm).build()
+      Try(verifier.verify(token)) match {
+        case Success(decoded) => Some(User(decoded.getClaim("id").asString.toInt, decoded.getClaim("email").asString,
+            null, null, decoded.getClaim("username").asString))
+        case Failure(_) => None
+      }
+    })
+  }
+
+  def generateJWTCookie(user: User): Cookie = {
     val nowPlusTenHours = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
     nowPlusTenHours.add(Calendar.HOUR, 10)
-    JWT.create
-      .withClaim("id", user.id)
+    val token = JWT.create
+      .withClaim("id", user.id.toString)
+      .withClaim("username", user.username)
+      .withClaim("email", user.email)
       .withExpiresAt(nowPlusTenHours.getTime)
       .sign(algorithm)
+    val duration = Duration.create(10, TimeUnit.HOURS)
+    Cookie(cookieHeader, token, maxAge = Some(duration.toSeconds.toInt))
   }
 
 }

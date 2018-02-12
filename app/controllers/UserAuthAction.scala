@@ -10,7 +10,7 @@ class UserAuthAction(val parser: BodyParser[AnyContent], authService: AuthServic
   extends ActionBuilder[UserAuthRequest, AnyContent] {
 
   override def invokeBlock[A](request: Request[A], block: (UserAuthRequest[A]) => Future[Result]): Future[Result] = {
-    authService.checkCookie(request) match {
+    authService.checkJWT(request) match {
       case None => Future.successful(Results.Unauthorized(Json.obj("error" -> "Unauthorised")))
       case Some(user) => block(controllers.UserAuthRequest(user, request))
     }
