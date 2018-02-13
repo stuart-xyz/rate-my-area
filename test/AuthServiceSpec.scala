@@ -13,11 +13,8 @@ import scala.reflect.ClassTag
 class AuthServiceSpec extends PlaySpec with BaseOneAppPerTest with AppApplicationFactory with MockitoSugar {
 
   val mockUser = User(1, "email@email.com", "hashed-password", "salt", "username")
-  val mockCacheApi: SyncCacheApi = mock[SyncCacheApi]
-  when(mockCacheApi.get(any[String])(any[ClassTag[User]])) thenReturn Some(mockUser)
-
   val mockDatabaseService: DatabaseService = mock[DatabaseService]
-  val mockAuthService = new AuthService(mockCacheApi, mockDatabaseService)
+  val mockAuthService = new AuthService(mockDatabaseService, fakeApplication().configuration)
 
   "AuthService#hashPasswordWithSalt" should {
 
@@ -31,13 +28,9 @@ class AuthServiceSpec extends PlaySpec with BaseOneAppPerTest with AppApplicatio
 
   "AuthService#generateCookie" should {
 
-    "generate and cache cookies with random hashed values" in {
-      val cookies = (1 to 10).map(_ => {
-        val cookie = mockAuthService.generateCookie(mockUser)
-        mockAuthService.checkCookie(FakeRequest().withCookies(cookie)).isDefined mustBe true
-        cookie
-      })
-      cookies.distinct.size == cookies.size mustBe true
+    "generate and verify JWT cookies" in {
+      val cookie = mockAuthService.generateJWTCookie(mockUser)
+      mockAuthService.checkJWT(FakeRequest().withCookies(cookie)).isDefined mustBe true
     }
 
   }
