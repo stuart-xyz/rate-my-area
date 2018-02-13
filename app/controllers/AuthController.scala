@@ -56,15 +56,7 @@ class AuthController(cc: ControllerComponents, databaseService: DatabaseService,
   }
 
   def logout = userAuthAction { implicit request =>
-    authService.logout(request) match {
-      case None => Unauthorized(Json.obj("error" -> "Unauthorised"))
-      case Some(removeCookieAttempt) =>
-        removeCookieAttempt match {
-          case Success(_) => Ok(Json.obj("message" -> "Successfully logged out")).discardingCookies(DiscardingCookie(cookieHeader))
-          case Failure(_: UserNotLoggedInException) => BadRequest(Json.obj("error" -> "The specified authentication token is not active"))
-          case Failure(_) => InternalServerError(Json.obj("error" -> "Unexpected internal error"))
-        }
-    }
+    Ok(Json.obj("message" -> "Successfully logged out")).discardingCookies(DiscardingCookie(cookieHeader))
   }
 
   def getUser = userAuthAction { implicit request =>
