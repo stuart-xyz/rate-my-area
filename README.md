@@ -33,6 +33,16 @@ Tests use an in-memory H2 database for storage, and Mockito to mock dependencies
 
 ## Run
 
+First build the UI, then copy build output to `public/compiled`.
+```
+git submodule init
+git submodule update
+cd ui
+npm run build
+cp -r build ../public/compiled
+```
+
+Run the Play application with SBT from the root directory.
 ```
 sbt "run -Dconfig.resource=/path/to/secrets.conf"
 ```
