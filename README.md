@@ -42,7 +42,7 @@ npm run build
 cp -r build ../public/compiled
 ```
 
-Run the Play application with SBT.
+Run the Play application with SBT from the root directory.
 ```
 sbt "run -Dconfig.resource=/path/to/secrets.conf"
 ```
