@@ -5,7 +5,6 @@ import org.postgresql.util.PSQLException
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.mvc._
-import services.CustomExceptions.UserNotLoggedInException
 import services.{AuthService, DatabaseService}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -13,8 +12,6 @@ import scala.util.{Failure, Success}
 
 class AuthController(cc: ControllerComponents, databaseService: DatabaseService, authService: AuthService, userAuthAction: UserAuthAction)(implicit ec: ExecutionContext)
   extends AbstractController(cc) {
-
-  private val cookieHeader = "X-Auth-Token"
 
   def login: Action[AnyContent] = Action.async { implicit request =>
     request.body.asJson match {
@@ -56,7 +53,7 @@ class AuthController(cc: ControllerComponents, databaseService: DatabaseService,
   }
 
   def logout = userAuthAction { implicit request =>
-    Ok(Json.obj("message" -> "Successfully logged out")).discardingCookies(DiscardingCookie(cookieHeader))
+    Ok(Json.obj("message" -> "Successfully logged out")).discardingCookies(DiscardingCookie(authService.cookieHeader))
   }
 
   def getUser = userAuthAction { implicit request =>
