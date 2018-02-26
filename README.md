@@ -64,8 +64,11 @@ A CircleCI config is provided - simply replace with your own details and make su
 
 Build the Docker image:
 ```
+sbt dist
 docker build -t stuartp.io/ratemyarea --build-arg BUILD_ENV=[local/dev/prod] .
 ```
+
+The credentials in `docker-conf/start-backend.sh` must be provided as environment variables to run the image locally.
 
 Build environments:
 * `local`: just the backend runs, no attempt to generate a TLS certificate.
