@@ -21,7 +21,7 @@ class S3Service(appConfig: Configuration) {
   def upload(file: File, filename: String, userId: Int): String = {
     val key = s"$userId/$filename"
     s3Client.putObject(new PutObjectRequest(configuredBucketName, key, file))
-    s3Client.getUrl(configuredBucketName, key).toString
+    s"https://$configuredBucketName/$key"
   }
 
   def delete(url: String): Unit = {
