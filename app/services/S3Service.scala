@@ -11,6 +11,7 @@ import play.api.Configuration
 class S3Service(appConfig: Configuration) {
 
   lazy val configuredBucketName: String = appConfig.get[String]("s3-bucket-name")
+  lazy val cloudFrontEnabled: Boolean = appConfig.get[Boolean]("cloudfront-enabled")
   lazy val regionName: String = appConfig.get[String]("s3-region")
   lazy val accessKey: String = appConfig.get[String]("s3-access-key")
   lazy val secretKey: String = appConfig.get[String]("s3-secret-key")
@@ -21,7 +22,8 @@ class S3Service(appConfig: Configuration) {
   def upload(file: File, filename: String, userId: Int): String = {
     val key = s"$userId/$filename"
     s3Client.putObject(new PutObjectRequest(configuredBucketName, key, file))
-    s"https://$configuredBucketName/$key"
+    if (cloudFrontEnabled) s"https://$configuredBucketName/$key"
+    else s"https://$configuredBucketName/$key"
   }
 
   def delete(url: String): Unit = {
