@@ -42,13 +42,15 @@ npm run build
 cp -r build ../public/compiled
 ```
 
-Run the Play application with SBT from the root directory. `secrets.conf` must be placed in `conf/`.
+Create a database named `ratemyarea` (or change the `application.conf` database URL). Run the Play application with SBT from the root directory. `secrets.conf` must be placed in `conf/`.
 ```
 sbt "run -Dconfig.resource=secrets.conf"
 ```
 
 What you need in `secrets.conf`:
 ```
+include "application.conf"
+
 s3-access-key = "XXX"
 s3-secret-key = "XXX"
 play.http.secret.key = "XXX"
