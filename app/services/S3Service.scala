@@ -23,7 +23,7 @@ class S3Service(appConfig: Configuration) {
     val key = s"$userId/$filename"
     s3Client.putObject(new PutObjectRequest(configuredBucketName, key, file))
     if (cloudFrontEnabled) s"https://$configuredBucketName/$key"
-    else s"https://$configuredBucketName/$key"
+    else s3Client.getUrl(configuredBucketName, key).toString
   }
 
   def delete(url: String): Unit = {
