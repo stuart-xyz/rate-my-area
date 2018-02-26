@@ -1,6 +1,5 @@
 package services
 
-import java.security.MessageDigest
 import java.util.concurrent.TimeUnit
 import java.util.{Calendar, TimeZone}
 
@@ -18,8 +17,7 @@ import scala.util.{Failure, Success, Try}
 class AuthService(databaseService: DatabaseService, appConfig: Configuration)(implicit ec: ExecutionContext) {
 
   case class HashedPasswordWithSalt(hashedPassword: String, salt: String)
-  private val mda = MessageDigest.getInstance("SHA-512")
-  private val cookieHeader = "X-Auth-Token"
+  val cookieHeader = "X-Auth-Token"
   private val algorithm = Algorithm.HMAC256(appConfig.get[String]("play.http.secret.key"))
 
   def login(email: String, password: String): Future[Try[Option[Cookie]]] = {
