@@ -19,9 +19,9 @@ An example deployment is hosted on AWS, at https://ratemyarea.stuartp.io, as sho
 ## Dependencies
 
 * JDK 8 installation
-* SBT installation
+* SBT 1.X installation
 * Docker installation
-* PostgreSQL server
+* Postgres server (developed with 9.6)
 
 ## Test
 
