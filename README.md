@@ -42,9 +42,9 @@ npm run build
 cp -r build ../public/compiled
 ```
 
-Run the Play application with SBT from the root directory.
+Run the Play application with SBT from the root directory. `secrets.conf` must be placed in `conf/`.
 ```
-sbt "run -Dconfig.resource=/path/to/secrets.conf"
+sbt "run -Dconfig.resource=secrets.conf"
 ```
 
 What you need in `secrets.conf`:
