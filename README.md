@@ -75,7 +75,7 @@ The credentials in `docker-conf/start-backend.sh` must be provided as environmen
 docker run --rm -i -p 80:80 -p 5432:5432 -e "S3_ACCESS_KEY=XXX" -e "S3_SECRET_KEY=XXX" -e "PLAY_SECRET_KEY=XXX" -e "DB_URL=jdbc:postgresql://docker.for.mac.host.internal:5432/ratemyarea" -e "DB_USER=XXX" -e "DB_PASSWORD=XXX" stuartp.io/ratemyarea
 ```
 
-(If running the Docker image locally, you can edit your hosts file to point `ratemyarea.stuartp.io` to `localhost`.)
+(If running the Docker image locally, you can edit your hosts file to point `ratemyarea.stuartp.io` to `localhost`, but remember to change the entry back afterwards! Note that only HTTP will be available in local mode.)
 
 Build environments:
 * `local`: just the backend runs, no attempt to generate a TLS certificate.
