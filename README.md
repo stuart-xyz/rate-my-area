@@ -25,7 +25,7 @@ An example deployment is hosted on AWS, at https://ratemyarea.stuartp.io, as sho
 
 ## Test
 
-```
+```bash
 sbt test
 ```
 
@@ -34,7 +34,7 @@ Tests use an in-memory H2 database for storage, and Mockito to mock dependencies
 ## Run
 
 First build the UI, then copy build output to `public/compiled`.
-```
+```bash
 git submodule init
 git submodule update
 cd ui
@@ -65,12 +65,15 @@ A CircleCI config is provided - simply replace with your own details and make su
 ## Manual deployment
 
 Build the Docker image:
-```
+```bash
 sbt dist
 docker build -t stuartp.io/ratemyarea --build-arg BUILD_ENV=[local/dev/prod] .
 ```
 
-The credentials in `docker-conf/start-backend.sh` must be provided as environment variables to run the image locally.
+The credentials in `docker-conf/start-backend.sh` must be provided as environment variables to run the image locally, e.g.
+```bash
+docker run --rm -i -p 80:80 -p 5432:5432 -e "S3_ACCESS_KEY=XXX" -e "S3_SECRET_KEY=XXX" -e "PLAY_SECRET_KEY=XXX" -e "DB_URL=jdbc:postgresql://docker.for.mac.host.internal:5432/ratemyarea" -e "DB_USER=XXX" -e "DB_PASSWORD=XXX" stuartp.io/ratemyarea
+```
 
 Build environments:
 * `local`: just the backend runs, no attempt to generate a TLS certificate.
