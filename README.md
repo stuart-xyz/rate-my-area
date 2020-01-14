@@ -20,6 +20,7 @@ An example deployment is hosted on AWS, at https://ratemyarea.stuartp.io, as sho
 
 * JDK 8 installation
 * SBT 1.X installation
+* Node.js 10 installation
 * Docker installation
 * Postgres server (developed with 9.6)
 
