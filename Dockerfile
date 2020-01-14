@@ -7,12 +7,7 @@ RUN apt-get install -y supervisor unzip software-properties-common python-softwa
 
 # Install Java
 
-RUN add-apt-repository ppa:webupd8team/java
-RUN apt-get update
-RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
-RUN echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
-RUN apt-get install -y oracle-java8-installer
-RUN apt-get install -y oracle-java8-set-default
+RUN apt-get update && apt-get install -y openjdk-8-jdk
 
 # Install nginx and LetsEncrypt Certbot
 
